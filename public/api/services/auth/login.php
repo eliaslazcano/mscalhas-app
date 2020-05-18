@@ -1,8 +1,11 @@
 <?php
+/*
+ * POST => Efetua o login, retorna o JWT.
+ */
 
-require_once __DIR__.'/../database/DbMscalhas.php';
-require_once __DIR__.'/../helper/HttpHelper.php';
-require_once __DIR__.'/../helper/AuthHelper.php';
+require_once __DIR__ . '/../../database/DbMscalhas.php';
+require_once __DIR__ . '/../../helper/HttpHelper.php';
+require_once __DIR__ . '/../../helper/AuthHelper.php';
 
 HttpHelper::validarMetodos(['POST']);
 
