@@ -1,6 +1,6 @@
 <?php
 /*
- * v1.2 2020-02-25
+ * v1.3 2020-05-25
  * Sem dependencias.
  * Oferece metodos estaticos que facilitam tratar e responder a requisicao HTTP.
  */
@@ -213,6 +213,13 @@ class HttpHelper
     if (!$valido) self::erroJson(400, $mensagemErro, 0, $nomes);
   }
 
+  public static function validarJson($decodificado = true, $mensagemErro = "Faltam dados na requisição")
+  {
+    $json = file_get_contents('php://input');
+    if (!$json) self::erroJson(400, $mensagemErro, 0, "JSON não identificado");
+    return $decodificado ? json_decode($json) : $json;
+  }
+
   /**
    * Obtem um dado que esta contido na requisicao, se ele nao existir obterá null
    * @param string $nome
@@ -238,6 +245,12 @@ class HttpHelper
       default:
         return null;
     }
+  }
+
+  public static function obterJson($decodificado = true)
+  {
+    $json = file_get_contents('php://input');
+    return $json ? ($decodificado ? json_decode($json) : $json) : null;
   }
 
   /**

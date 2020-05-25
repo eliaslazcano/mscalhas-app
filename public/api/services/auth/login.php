@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $query = "SELECT id, senha, ativo FROM usuarios WHERE login = :login";
   $db = new DbMscalhas();
-  $statement = $db->conn->prepare($query);
+  $statement = $db->getConn()->prepare($query);
   $statement->bindValue(':login', $login);
   if (!$statement->execute()) HttpHelper::erroJson(500, "Falha na base de dados", 0, $statement->errorInfo());
   $account = $statement->fetch(PDO::FETCH_ASSOC);

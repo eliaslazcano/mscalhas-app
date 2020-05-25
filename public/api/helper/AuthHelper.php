@@ -16,7 +16,7 @@ class AuthHelper
   {
     //Get the token data
     $db = new DbMscalhas();
-    $statement = $db->conn->prepare("SELECT id, login, senha, nome FROM usuarios WHERE id = :id");
+    $statement = $db->getConn()->prepare("SELECT id, login, senha, nome FROM usuarios WHERE id = :id");
     $statement->bindValue(':id', $userId, PDO::PARAM_INT);
     if (!$statement->execute()) {
       if ($emitError) HttpHelper::erroJson(500, "Falha na base de dados", 0, $statement->errorInfo());
@@ -40,7 +40,7 @@ class AuthHelper
     $token = new JwtHelper($key, $data);
 
     //Token registry
-    $statement = $db->conn->prepare("INSERT INTO sessoes (chave, usuario, ip, datahora) VALUES (:chave, :usuario, :ip, :datahora)");
+    $statement = $db->getConn()->prepare("INSERT INTO sessoes (chave, usuario, ip, datahora) VALUES (:chave, :usuario, :ip, :datahora)");
     $statement->bindValue(':chave', $key);
     $statement->bindValue(':usuario', $userId, PDO::PARAM_INT);
     $statement->bindValue(':ip', HttpHelper::obterIp());
@@ -79,7 +79,7 @@ class AuthHelper
     //Validate token session
     $query = "SELECT chave FROM sessoes WHERE usuario = :id AND datahora = :datahora LIMIT 1";
     $db = new DbMscalhas();
-    $statement = $db->conn->prepare($query);
+    $statement = $db->getConn()->prepare($query);
     $statement->bindValue(':id', $data->id, PDO::PARAM_INT);
     $statement->bindValue(':datahora', $data->loginTime);
     if (!$statement->execute()) {
@@ -97,7 +97,7 @@ class AuthHelper
     //If last token emitted
     if ($authorized && $lastSessionOnly) {
       $query = "SELECT chave FROM sessoes WHERE usuario = :id ORDER BY id DESC LIMIT 1";
-      $statement = $db->conn->prepare($query);
+      $statement = $db->getConn()->prepare($query);
       $statement->bindValue(':id', $data->id, PDO::PARAM_INT);
       if (!$statement->execute()) {
         if ($emitError) HttpHelper::erroJson(500, "Falha na base de dados", 5);

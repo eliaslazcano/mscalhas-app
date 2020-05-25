@@ -1,52 +1,48 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
+    <!-- Menu lateral -->
+    <SideNav v-model="showMenu"></SideNav>
+    <!-- Barra de ferramentas -->
+    <AppBar></AppBar>
+    <!-- Conteúdo -->
     <v-content>
+      <transition name="fade" mode="out-in" @after-leave="scrollTop">
+        <router-view/>
+      </transition>
     </v-content>
   </v-app>
 </template>
 
 <script>
+import SideNav from "./components/SideNav";
+import AppBar from "./components/AppBar";
 export default {
   name: 'App',
+  components: {AppBar, SideNav},
   data: () => ({
-    //
+    showMenu: null
   }),
+  methods: {
+    scrollTop() {
+      window.scrollTo(0, 0);
+    }
+  }
 };
 </script>
+
+<style>
+  .fade-enter-active,
+  .fade-leave-active {
+    transition-duration: 300ms;
+    transition-property: opacity;
+    transition-timing-function: ease-out;
+  }
+  .fade-enter,
+  .fade-leave-to {
+    opacity: 0;
+  }
+  .fade-leave,
+  .fade-enter-to {
+    opacity: 1;
+  }
+</style>

@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import axios from 'axios'
 import store from '../store'
 
@@ -15,4 +16,5 @@ http.interceptors.request.use(config => {
   return config;
 }, error => Promise.reject(error));
 
+Vue.prototype.$http = http;
 export default http;

@@ -13,17 +13,26 @@ class DbMscalhas
   private $_timezone  = Config::DATABASE_TIMEZONE;  // Pode ser null
   //====================================================================//
 
-  public $conn;
+  private $conn;
+
+  /**
+   * Obtem a conexão usada com o banco de dados
+   * @return PDO
+   */
+  public function getConn(): PDO
+  {
+    return $this->conn;
+  }
 
   /**
    * DbMscalhas constructor.
    */
   public function __construct()
   {
-    $this->conn = $this->getConn();
+    $this->conn = $this->createConn();
   }
 
-  private function getConn(){
+  private function createConn(){
     try {
       $conn = new PDO('mysql:host='.$this->_host.';dbname='.$this->_database.($this->_charset ? ';charset='.$this->_charset : ''), $this->_usuario, $this->_senha);
       if ($this->_timezone) $conn->exec("SET time_zone='".$this->_timezone."';");
@@ -60,5 +69,17 @@ class DbMscalhas
       }
     }
     return $lines;
+  }
+
+  /**
+   * Cria uma nova conexão com o banco e realiza uma consulta, encerrando a conexão imediatamente.
+   * @param $sql
+   * @param array $columnsNotNumber
+   * @return array Linhas resultantes
+   */
+  public static function fastQuery($sql, $columnsNotNumber = [])
+  {
+    $db = new self();
+    return $db->query($sql, $columnsNotNumber);
   }
 }
