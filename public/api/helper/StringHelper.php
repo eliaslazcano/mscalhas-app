@@ -1,6 +1,6 @@
 <?php
 /*
- * v1.0 2020-02-14
+ * v1.1 2020-05-27
  * Sem dependencias.
  * Oferece metodos estaticos que facilitam tratar strings.
  */
