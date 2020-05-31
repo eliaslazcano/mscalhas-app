@@ -42,29 +42,30 @@ class DbMscalhas
     }
   }
 
-  /**
-   * Faz uma consulta simples (SELECT).
-   * @param string $sql
-   * @param array $columnsNotNumber
-   * @return array Linhas resultantes
-   */
-  public function query($sql, $columnsNotNumber = []) {
+    /**
+     * Faz uma consulta simples (SELECT).
+     * @param string $sql A query da consulta.
+     * @param bool $returnFirstLine Se verdadeiro, irá retornar a primeira linha do resultado, senão NULL.
+     * @param array $numericColumns Os nomes das colunas que a serem convertidas para um resultado númerico (INT|FLOAT). Um array vazio tentará converter todas.
+     * @return array Linhas resultantes
+     */
+  public function query($sql, $returnFirstLine = false, $numericColumns = []) {
     $statement = $this->conn->query($sql);
     if (!$statement) HttpHelper::erroJson(500, "Falha ao consultar base de dados", 0, $statement->errorInfo());
-    return $this->serializeNumericColumns($statement->fetchAll(PDO::FETCH_ASSOC), $columnsNotNumber);
+    return $this->serializeNumericColumns($statement->fetchAll(PDO::FETCH_ASSOC), $numericColumns);
   }
 
-  /**
-   * Adapta resultados do PDO, que colunas numéricas passem de string para INT|DOUBLE
-   * @param array $lines
-   * @param array $columnsNotNumber
-   * @return array
-   */
-  public function serializeNumericColumns($lines, $columnsNotNumber = []) {
-    foreach ($lines as $n => $linha) {
-      foreach ($linha as $coluna => $v) {
-        if (!in_array($coluna, $columnsNotNumber)) {
-          if (is_numeric($v)) $lines[$n][$coluna] = $v + 0;
+    /**
+     * Adapta resultados do PDO, que colunas numéricas passem de string para INT|DOUBLE. O conversor irá ignorar strings que não contenham dígito numérico.
+     * @param array $lines Matriz de $matriz[nLinha][nomeColuna]
+     * @param array $numericColumns Os nomes das colunas que a serem convertidas para um resultado númerico (INT|FLOAT). Um array vazio tentará converter todas.
+     * @return array
+     */
+  public function serializeNumericColumns($lines, $numericColumns = []) {
+    foreach ($lines as $index => $line) {
+      foreach ($line as $columnName => $value) {
+        if (in_array($columnName, $numericColumns) || count($numericColumns) === 0) {
+          if (is_numeric($value)) $lines[$index][$columnName] = $value + 0;
         }
       }
     }
