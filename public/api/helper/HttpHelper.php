@@ -30,15 +30,15 @@ class HttpHelper
   /**
    * Confere se a requisição atendida é do tipo POST, caso contrário mata o script e responde HTTP 405.
    * @param bool $matarRequisicao A validacao mata o script PHP em caso de falhas. Ou então informa TRUE/FALSE.
-   * @param string $allowOrigin Origens aceitas, separadas por virgula.
-   * @param string $allowHeaders Cabecalhos aceitos, separados por virgula.
+   * @param string $allowOrigin Origens aceitas, separadas por virgula. Ex: "*".
+   * @param string $allowHeaders Cabecalhos aceitos, separados por virgula. Ex: "Authorization, Content-Type".
    * @return bool Se $matarRequisicao = false, o retorno informa se a validacao deu certo com TRUE/FALSE.
    */
-  public static function validarPost($matarRequisicao = true, $allowOrigin = "*" ,$allowHeaders = "Authorization, Content-Type")
+  public static function validarPost($matarRequisicao = true, $allowOrigin = null, $allowHeaders = null)
   {
-    header("Access-Control-Allow-Origin: $allowOrigin", true);
+    if ($allowOrigin) header("Access-Control-Allow-Origin: $allowOrigin", true);
     header('Access-Control-Allow-Methods: POST, OPTIONS', true);
-    header("Access-Control-Allow-Headers: $allowHeaders", true);
+    if ($allowHeaders) header("Access-Control-Allow-Headers: $allowHeaders", true);
 
     $metodo = $_SERVER['REQUEST_METHOD'];
 
@@ -54,15 +54,15 @@ class HttpHelper
   /**
    * Confere se a requisição atendida é do tipo POST, caso contrário mata o script e responde HTTP 405.
    * @param bool $matarRequisicao A validacao mata o script PHP em caso de falhas. Ou então informa TRUE/FALSE.
-   * @param string $allowOrigin Origens aceitas, separadas por virgula.
-   * @param string $allowHeaders Cabecalhos aceitos, separados por virgula.
+   * @param string $allowOrigin Origens aceitas, separadas por virgula. Ex: "*".
+   * @param string $allowHeaders Cabecalhos aceitos, separados por virgula. Ex: "Authorization, Content-Type".
    * @return bool Se $matarRequisicao = false, o retorno informa se a validacao deu certo com TRUE/FALSE.
    */
-  public static function validarGet($matarRequisicao = true, $allowOrigin = "*" ,$allowHeaders = "Authorization, Content-Type")
+  public static function validarGet($matarRequisicao = true, $allowOrigin = null, $allowHeaders = null)
   {
-    header("Access-Control-Allow-Origin: $allowOrigin", true);
+    if ($allowOrigin) header("Access-Control-Allow-Origin: $allowOrigin", true);
     header('Access-Control-Allow-Methods: GET, OPTIONS', true);
-    header("Access-Control-Allow-Headers: $allowHeaders", true);
+    if ($allowHeaders) header("Access-Control-Allow-Headers: $allowHeaders", true);
 
     $metodo = $_SERVER['REQUEST_METHOD'];
 
@@ -79,16 +79,16 @@ class HttpHelper
    * Confere se a requisição é do metodo especificado, caso contrário mata o script e responde HTTP 405. OPTIONS é validado.
    * @param string $metodo Metodo HTTP.
    * @param bool $matarRequisicao A validacao mata o script PHP em caso de falhas. Ou então informa TRUE/FALSE.
-   * @param string $allowOrigin Origens aceitas, separadas por virgula.
-   * @param string $allowHeaders Cabecalhos aceitos, separados por virgula.
+   * @param string $allowOrigin Origens aceitas, separadas por virgula. Ex: "*".
+   * @param string $allowHeaders Cabecalhos aceitos, separados por virgula. Ex: "Authorization, Content-Type".
    * @return bool Se $matarRequisicao = false, o retorno informa se a validacao deu certo com TRUE/FALSE.
    */
-  public static function validarMetodo($metodo, $matarRequisicao = true, $allowOrigin = "*" , $allowHeaders = "Authorization, Content-Type")
+  public static function validarMetodo($metodo, $matarRequisicao = true, $allowOrigin = null, $allowHeaders = null)
   {
     $metodo = strtoupper($metodo);
-    header("Access-Control-Allow-Origin: $allowOrigin", true);
+    if ($allowOrigin) header("Access-Control-Allow-Origin: $allowOrigin", true);
     header("Access-Control-Allow-Methods: $metodo, OPTIONS", true);
-    header("Access-Control-Allow-Headers: $allowHeaders", true);
+    if ($allowHeaders) header("Access-Control-Allow-Headers: $allowHeaders", true);
 
     $metodoOriginal = $_SERVER['REQUEST_METHOD'];
 
@@ -104,11 +104,11 @@ class HttpHelper
   /**
    * @param array $metodos Array de string, com o nome dos metodos desejaveis para validar. OPTIONS é autoincluido.
    * @param bool $matarRequisicao A validacao mata o script PHP em caso de falhas. Ou então informa TRUE/FALSE.
-   * @param string $allowOrigin Origens aceitas, separadas por virgula.
-   * @param string $allowHeaders Cabecalhos aceitos, separados por virgula.
+   * @param string $allowOrigin Origens aceitas, separadas por virgula. Ex: "*".
+   * @param string $allowHeaders Cabecalhos aceitos, separados por virgula. Ex: "Authorization, Content-Type".
    * @return bool Se $matarRequisicao = false, o retorno informa se a validacao deu certo com TRUE/FALSE.
    */
-  public static function validarMetodos($metodos = ['GET', 'POST', 'PUT', 'DELETE'], $matarRequisicao = true, $allowOrigin = "*" , $allowHeaders = "Authorization, Content-Type")
+  public static function validarMetodos($metodos = ['GET', 'POST', 'PUT', 'DELETE'], $matarRequisicao = true, $allowOrigin = null, $allowHeaders = null)
   {
     if (gettype($metodos) !== 'array') self::erroJson(400, "validarMetodos() precisa receber um array de string no primeiro parametro");
     if (count($metodos) === 0) self::erroJson(400, "validarMetodos() precisa receber ao menos 1 metodo http no array do primeiro parametro");
@@ -116,9 +116,9 @@ class HttpHelper
     $metodos = array_map(function ($metodo) { return strtoupper($metodo); }, $metodos); //Passa para caixa alta.
     $metodosString = count($metodos) > 1 ? implode(", ", $metodos) : $metodos[0]; //Une em string separado por virgula.
 
-    header("Access-Control-Allow-Origin: $allowOrigin", true);
+    if ($allowOrigin) header("Access-Control-Allow-Origin: $allowOrigin", true);
     header("Access-Control-Allow-Methods: $metodosString, OPTIONS", true);
-    header("Access-Control-Allow-Headers: $allowHeaders", true);
+    if ($allowHeaders) header("Access-Control-Allow-Headers: $allowHeaders", true);
 
     $metodoOriginal = $_SERVER['REQUEST_METHOD'];
 

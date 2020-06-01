@@ -1,6 +1,9 @@
 <?php
+require_once __DIR__.'/Config.php';
+
 // === ENTRY POINT ===
-//Este arquivo é executado globalmente antes de qualquer serviço ser carregado
+header("Access-Control-Allow-Origin: ".Config::ALLOW_ORIGIN);
+header("Access-Control-Allow-Headers: ".Config::ALLOW_HEADERS);
 
 // === Tratamento de Rota ===
 $pathInfo = isset($_SERVER['PATH_INFO']);
