@@ -165,22 +165,31 @@ class HttpHelper
    */
   public static function validarParametro($nome, $mensagemErro = "Faltam dados na requisição")
   {
-    switch ($_SERVER['REQUEST_METHOD']) {
-      case "DELETE":
-      case "GET":
-        if (!isset($_GET[$nome])) self::erroJson(400, $mensagemErro, 0, $nome);
-        else return $_GET[$nome];
-        break;
-      case "POST":
-        if (!isset($_POST[$nome]) && !isset($_FILES[$nome])) self::erroJson(400, $mensagemErro, 0, $nome);
-        else return (isset($_FILES[$nome])) ? $_FILES[$nome] : $_POST[$nome];
-        break;
-      case "PUT":
-        $dados = self::getFormData();
-        if (!isset($dados[$nome]) && !isset($_FILES[$nome])) self::erroJson(400, $mensagemErro, 0, $nome);
-        else return (isset($_FILES[$nome])) ? $_FILES[$nome] : $dados[$nome];
+    if (self::obterCabecalho('Content-Type') === 'application/json') {
+      $dados = json_decode(file_get_contents('php://input'), true);
+      if (array_key_exists($nome,$dados)) return $dados[$nome];
+      else self::erroJson(400, $mensagemErro, 0, $nome);
     }
-    return null;
+    else {
+      switch ($_SERVER['REQUEST_METHOD']) {
+        case "DELETE":
+        case "GET":
+          if (!isset($_GET[$nome])) self::erroJson(400, $mensagemErro, 0, $nome);
+          else return $_GET[$nome];
+          break;
+        case "POST":
+          if (!isset($_POST[$nome]) && !isset($_FILES[$nome])) self::erroJson(400, $mensagemErro, 0, $nome);
+          else return (isset($_FILES[$nome])) ? $_FILES[$nome] : $_POST[$nome];
+          break;
+        case "PUT":
+          $dados = self::getFormData();
+          if (!isset($dados[$nome]) && !isset($_FILES[$nome])) self::erroJson(400, $mensagemErro, 0, $nome);
+          else return (isset($_FILES[$nome])) ? $_FILES[$nome] : $dados[$nome];
+          break;
+        default:
+          return null;
+      }
+    }
   }
 
   /**
@@ -191,26 +200,33 @@ class HttpHelper
    */
   public static function validarParametros($nomes, $mensagemErro = "Faltam dados na requisição")
   {
-    $valido = true;
-    switch ($_SERVER['REQUEST_METHOD']) {
-      case "DELETE":
-      case "GET":
-        foreach ($nomes as $nome) {
-          $valido = (isset($_GET[$nome])) ? $valido : false;
-        }
-        break;
-      case "POST":
-        foreach ($nomes as $nome) {
-          $valido = (isset($_POST[$nome]) || isset($_FILES[$nome])) ? $valido : false;
-        }
-        break;
-      case "PUT":
-        $dados = self::getFormData();
-        foreach ($nomes as $nome) {
-          $valido = (isset($dados[$nome]) || isset($_FILES[$nome])) ? $valido : false;
-        }
+    if (self::obterCabecalho('Content-Type') === 'application/json') {
+      $dados = json_decode(file_get_contents('php://input'), true);
+      foreach ($nomes as $nome) {
+        if (!array_key_exists($nome,$dados)) self::erroJson(400, $mensagemErro, 0, $nome);
+      }
+    } else {
+      $valido = true;
+      switch ($_SERVER['REQUEST_METHOD']) {
+        case "DELETE":
+        case "GET":
+          foreach ($nomes as $nome) {
+            $valido = (isset($_GET[$nome])) ? $valido : false;
+          }
+          break;
+        case "POST":
+          foreach ($nomes as $nome) {
+            $valido = (isset($_POST[$nome]) || isset($_FILES[$nome])) ? $valido : false;
+          }
+          break;
+        case "PUT":
+          $dados = self::getFormData();
+          foreach ($nomes as $nome) {
+            $valido = (isset($dados[$nome]) || isset($_FILES[$nome])) ? $valido : false;
+          }
+      }
+      if (!$valido) self::erroJson(400, $mensagemErro, 0, $nomes);
     }
-    if (!$valido) self::erroJson(400, $mensagemErro, 0, $nomes);
   }
 
   public static function validarJson($decodificado = true, $mensagemErro = "Faltam dados na requisição")
@@ -227,23 +243,29 @@ class HttpHelper
    */
   public static function obterParametro($nome)
   {
-    switch ($_SERVER['REQUEST_METHOD']) {
-      case "DELETE":
-      case "GET":
-        if (!isset($_GET[$nome])) return null;
-        else return $_GET[$nome];
-        break;
-      case "POST":
-        if (!isset($_POST[$nome]) && !isset($_FILES[$nome])) return null;
-        else return (isset($_FILES[$nome])) ? $_FILES[$nome] : $_POST[$nome];
-        break;
-      case "PUT":
-        $dados = self::getFormData();
-        if (!isset($dados[$nome]) && !isset($_FILES[$nome])) return null;
-        else return (isset($_FILES[$nome])) ? $_FILES[$nome] : $dados[$nome];
-        break;
-      default:
-        return null;
+    if (self::obterCabecalho('Content-Type') === 'application/json') {
+      $dados = json_decode(file_get_contents('php://input'), true);
+      if (array_key_exists($nome,$dados)) return $dados[$nome];
+      else return null;
+    } else {
+      switch ($_SERVER['REQUEST_METHOD']) {
+        case "DELETE":
+        case "GET":
+          if (!isset($_GET[$nome])) return null;
+          else return $_GET[$nome];
+          break;
+        case "POST":
+          if (!isset($_POST[$nome]) && !isset($_FILES[$nome])) return null;
+          else return (isset($_FILES[$nome])) ? $_FILES[$nome] : $_POST[$nome];
+          break;
+        case "PUT":
+          $dados = self::getFormData();
+          if (!isset($dados[$nome]) && !isset($_FILES[$nome])) return null;
+          else return (isset($_FILES[$nome])) ? $_FILES[$nome] : $dados[$nome];
+          break;
+        default:
+          return null;
+      }
     }
   }
 
