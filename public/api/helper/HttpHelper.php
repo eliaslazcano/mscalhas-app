@@ -1,6 +1,6 @@
 <?php
 /*
- * v1.3 2020-05-25
+ * v1.4 2020-06-01
  * Sem dependencias.
  * Oferece metodos estaticos que facilitam tratar e responder a requisicao HTTP.
  */

@@ -9,6 +9,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import './http'
 
 Vue.config.productionTip = false;
+store.subscribe((mutation, state) => { localStorage.setItem('store', JSON.stringify(state)) });
 
 new Vue({
   router,

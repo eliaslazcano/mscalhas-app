@@ -34,6 +34,7 @@ export default new Vuex.Store({
   },
   getters: {
     logged: state => Boolean(state.token)
+    // tokenPayload: state => !state.token ? null : new JwtHelper(state.token).getDados()
   },
   modules: {
   }

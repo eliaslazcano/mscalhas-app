@@ -67,7 +67,7 @@
       submit() {
         this.loading = true;
         this.$store.dispatch('login', {login: this.user, senha: this.password})
-          .then(r => console.log(r))
+          .then(() => this.$router.push('/'))
           .finally(() => this.loading = false)
       },
       resetPassword() {}
