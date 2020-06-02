@@ -30,8 +30,8 @@
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-center">
-            <v-btn @click="showDialogAddUser = false">Cancelar</v-btn>
-            <v-btn @click="addUsuario" color="primary">Gravar</v-btn>
+            <v-btn @click="showDialogAddUser = false" :disabled="loading">Cancelar</v-btn>
+            <v-btn @click="addUsuario" color="primary" :disabled="loading" :loading="loading">Gravar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -53,7 +53,7 @@
           <!-- Editar -->
           <v-tooltip top>
             <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" :disabled="loading" color="amber" small>
+              <v-btn icon v-on="on" :disabled="loading" color="amber" small @click="iptId = item.id">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
@@ -142,7 +142,8 @@
         }
         this.loading = true;
         try {
-          await this.$http.post('/usuarios', {login: this.iptLogin.trim(), nome: this.iptNome.trim(), email: this.iptEmail.trim()});
+          if (this.iptId) await this.$http.put('/usuarios', {id: this.iptId, login: this.iptLogin.trim(), nome: this.iptNome.trim(), email: this.iptEmail.trim()});
+          else await this.$http.post('/usuarios', {login: this.iptLogin.trim(), nome: this.iptNome.trim(), email: this.iptEmail.trim()});
           await this.loadData();
           this.showDialogAddUser = false;
         } finally {
@@ -177,19 +178,27 @@
           this.loading = false;
         }
       },
-      // async editarUsuario(usuario) {
-      //   this.loading = true;
-      //   try {
-      //     await this.$http.put('/usuarios', {id: usuario.id, login: this.iptLogin.trim(), nome: this.iptNome.trim(), email: this.iptEmail.trim()});
-      //     await this.loadData();
-      //   } finally {
-      //     this.loading = false;
-      //   }
-      // },
-      //Interno
       corrigeData(datetimeSql) {
         return DateHelper.datetime_SQLparaBR(datetimeSql);
+      },
+      preencherCampos(usuario = null) {
+        if (usuario) {
+          this.iptLogin = usuario.login;
+          this.iptNome = usuario.nome;
+          this.iptEmail = usuario.email;
+        }
+        else this.iptLogin = this.iptNome = this.iptEmail = '';
       }
+    },
+    watch: {
+      iptId(v) {
+        if (v) {
+          const usuario = this.usuarios.find(u => u.id === v);
+          this.preencherCampos(usuario);
+          this.showDialogAddUser = true;
+        } else this.preencherCampos();
+      },
+      showDialogAddUser(v) { if (!v) this.iptId = null; }
     },
     created() {this.loadData()}
   }
