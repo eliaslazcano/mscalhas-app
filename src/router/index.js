@@ -5,7 +5,7 @@ import store from '../store'
 
 Vue.use(VueRouter);
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'Home',
@@ -18,12 +18,15 @@ Vue.use(VueRouter);
     meta: {
       public: true
     }
+  },
+  {
+    path: '/config',
+    name: 'Config',
+    component: () => import('../views/Config.vue')
   }
 ];
 
-const router = new VueRouter({
-  routes
-});
+const router = new VueRouter({routes});
 
 router.beforeEach((to, from, next) => {
   if (to.name !== 'Login' && !to.meta.public && !store.state.token) next({ name: 'Login' });
@@ -31,4 +34,4 @@ router.beforeEach((to, from, next) => {
   else next();
 });
 
-export default router
+export default router;

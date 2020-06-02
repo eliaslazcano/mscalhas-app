@@ -7,8 +7,60 @@
       v-if="$store.state.token"
       v-model="showMenu"
     >
+      <!-- Dados do usuario -->
       <template v-slot:prepend>
-        <v-list></v-list>
+        <v-list>
+          <v-list-item>
+            <v-list-item-avatar>
+              <v-avatar color="primary" class="font-weight-medium elevation-2 white--text">{{$store.getters.nameInitials}}</v-avatar>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>{{$store.getters.nameShort}}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
+      <v-divider></v-divider>
+      <!-- Lista de links -->
+      <v-list dense>
+        <v-list-item link to="/">
+          <v-list-item-action>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Início</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link to="/servicos">
+          <v-list-item-action>
+            <v-icon>mdi-tools</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Serviços</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link to="/cheques">
+          <v-list-item-action>
+            <v-icon>mdi-checkbook</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Cheques</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link to="/config">
+          <v-list-item-action>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Configurações</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <!-- Rodapé do menu -->
+      <template v-slot:append>
+        <div class="px-2 pb-3">
+          <v-btn color="primary" class="white--text" large block v-if="!$vuetify.breakpoint.lgAndUp" @click="() => {showMenu = false; $store.dispatch('signout')}">SAIR</v-btn>
+        </div>
       </template>
     </v-navigation-drawer>
     <!-- Barra de ferramentas -->
@@ -21,6 +73,8 @@
     >
       <v-app-bar-nav-icon @click.stop="showMenu = !showMenu" />
       <v-toolbar-title class="ml-0 pl-4">MS Calhas</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn light @click="() => {$store.commit('signout'); $router.push('/login')}">Sair</v-btn>
     </v-app-bar>
     <!-- Conteúdo -->
     <v-content>

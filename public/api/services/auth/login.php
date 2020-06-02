@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../database/DbMscalhas.php';
 require_once __DIR__ . '/../../helper/HttpHelper.php';
 require_once __DIR__ . '/../../helper/AuthHelper.php';
 
-HttpHelper::validarMetodos(['POST']);
+HttpHelper::validarMetodos(array('POST'));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $login = HttpHelper::validarParametro('login');

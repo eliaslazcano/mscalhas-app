@@ -75,12 +75,12 @@ class DbMscalhas
   /**
    * Cria uma nova conexão com o banco e realiza uma consulta, encerrando a conexão imediatamente.
    * @param $sql
-   * @param array $columnsNotNumber
+   * @param array $numericColumns
    * @return array Linhas resultantes
    */
-  public static function fastQuery($sql, $columnsNotNumber = [])
+  public static function fastQuery($sql, $numericColumns = [])
   {
     $db = new self();
-    return $db->query($sql, $columnsNotNumber);
+    return $db->query($sql, $numericColumns);
   }
 }

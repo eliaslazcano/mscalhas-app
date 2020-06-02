@@ -1,3 +1,11 @@
+create table socios
+(
+    id   int auto_increment
+        primary key,
+    nome varchar(150) not null
+)
+    comment 'Quadro societario da empresa';
+
 create table usuarios
 (
     id    int auto_increment
