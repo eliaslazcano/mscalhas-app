@@ -1,0 +1,16 @@
+{
+  "name": "mscalhas-app",
+  "description": "sistema de balcao e gestao",
+  "authors": [
+    {
+      "name": "Elias Lazcano Castro Neto",
+      "email": "elias304162@gmail.com"
+    }
+  ],
+  "require": {
+    "phpmailer/phpmailer": "^6.1",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-pdo": "*"
+  }
+}

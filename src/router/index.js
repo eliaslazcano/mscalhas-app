@@ -23,6 +23,16 @@ const routes = [
     path: '/config',
     name: 'Config',
     component: () => import('../views/Config.vue')
+  },
+  {
+    path: '/servicos',
+    name: 'Servicos',
+    component: () => import('../views/Servicos.vue')
+  },
+  {
+    path: '/cheques',
+    name: 'Cheques',
+    component: () => import('../views/Cheques.vue')
   }
 ];
 

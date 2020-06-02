@@ -1,8 +1,8 @@
 <?php
 /*
- * GET = Lista socios
- * POST = Adiciona
- * PUT = Renomeia
+ * GET    = Lista socios
+ * POST   = Adiciona
+ * PUT    = Renomeia
  * DELETE = Remove
  */
 require_once __DIR__.'/../helper/HttpHelper.php';

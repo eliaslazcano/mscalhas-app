@@ -89,7 +89,3 @@
     created() {this.loadData()}
   }
 </script>
-
-<style scoped>
-
-</style>

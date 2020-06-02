@@ -42,17 +42,19 @@ class DbMscalhas
     }
   }
 
-    /**
-     * Faz uma consulta simples (SELECT).
-     * @param string $sql A query da consulta.
-     * @param bool $returnFirstLine Se verdadeiro, irá retornar a primeira linha do resultado, senão NULL.
-     * @param array $numericColumns Os nomes das colunas que a serem convertidas para um resultado númerico (INT|FLOAT). Um array vazio tentará converter todas.
-     * @return array Linhas resultantes
-     */
-  public function query($sql, $returnFirstLine = false, $numericColumns = []) {
+  /**
+   * Faz uma consulta simples (SELECT).
+   * @param string $sql A query da consulta.
+   * @param array $numericColumns Os nomes das colunas que a serem convertidas para um resultado númerico (INT|FLOAT). Um array vazio tentará converter todas.
+   * @param bool $returnFirstLine Se verdadeiro, irá retornar a primeira linha do resultado, senão NULL.
+   * @return array Linhas resultantes
+   */
+  public function query($sql, $numericColumns = array(), $returnFirstLine = false) {
     $statement = $this->conn->query($sql);
     if (!$statement) HttpHelper::erroJson(500, "Falha ao consultar base de dados", 0, $statement->errorInfo());
-    return $this->serializeNumericColumns($statement->fetchAll(PDO::FETCH_ASSOC), $numericColumns);
+    $result = $this->serializeNumericColumns($statement->fetchAll(PDO::FETCH_ASSOC), $numericColumns);
+    if ($returnFirstLine) return (count($result) > 0) ? $result[0] : null;
+    else return $result;
   }
 
     /**
@@ -74,13 +76,16 @@ class DbMscalhas
 
   /**
    * Cria uma nova conexão com o banco e realiza uma consulta, encerrando a conexão imediatamente.
-   * @param $sql
-   * @param array $numericColumns
+   * @param string $sql A query da consulta.
+   * @param array $numericColumns Os nomes das colunas que a serem convertidas para um resultado númerico (INT|FLOAT). Um array vazio tentará converter todas.
+   * @param bool $returnFirstLine Se verdadeiro, irá retornar a primeira linha do resultado, senão NULL.
    * @return array Linhas resultantes
    */
-  public static function fastQuery($sql, $numericColumns = [])
+  public static function fastQuery($sql, $numericColumns = array(), $returnFirstLine = false)
   {
     $db = new self();
-    return $db->query($sql, $numericColumns);
+    $result = $db->query($sql, $numericColumns);
+    if ($returnFirstLine) return (count($result) > 0) ? $result[0] : null;
+    else return $result;
   }
 }
