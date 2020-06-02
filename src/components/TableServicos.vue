@@ -1,0 +1,53 @@
+<template>
+  <v-card>
+    <v-card-title class="justify-space-between">
+      Serviços
+      <v-btn color="success">Adicionar</v-btn>
+    </v-card-title>
+    <v-card-text>
+      <v-data-table
+        :items="servicos"
+        :headers="headers"
+        :loading="loading"
+        sort-by="id"
+        sort-desc
+        no-data-text="Nenhum serviço encontrado"
+      ></v-data-table>
+    </v-card-text>
+  </v-card>
+</template>
+
+<script>
+  export default {
+    name: "TableServicos",
+    data: () => ({
+      loading: true,
+      servicos: [],
+      headers: [
+        {text: 'Cod.', value: 'id'},
+        {text: 'Cliente', value: 'cliente_nome'},
+        {text: 'Status', value: 'status'},
+        {text: 'Valor', value: 'valor'},
+        {text: 'Responsável', value: 'socio_responsavel_nome'}
+      ]
+    }),
+    methods: {
+      async loadData() {
+        this.loading = true;
+        try {
+          const {data: servicos} = await this.$http.get('/servicos');
+          this.servicos = servicos;
+        } finally {
+          this.loading = false;
+        }
+      }
+    },
+    created() {
+      this.loadData();
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>

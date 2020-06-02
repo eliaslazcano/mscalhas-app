@@ -1,9 +1,11 @@
 <template>
-  <h1>Servicos</h1>
+  <table-servicos></table-servicos>
 </template>
 
 <script>
+    import TableServicos from "../components/TableServicos";
     export default {
-        name: "Servicos"
+        name: "Servicos",
+      components: {TableServicos}
     }
 </script>
