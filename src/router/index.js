@@ -27,6 +27,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.name !== 'Login' && !to.meta.public && !store.state.token) next({ name: 'Login' });
+  else if (to.name === 'Login' && store.state.token) next('/');
   else next();
 });
 

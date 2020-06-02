@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import http from '../http'
+import {JwtHelper} from 'eliaslazcano-helpers'
 
 Vue.use(Vuex);
 
@@ -33,8 +34,8 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    logged: state => Boolean(state.token)
-    // tokenPayload: state => !state.token ? null : new JwtHelper(state.token).getDados()
+    logged: state => Boolean(state.token),
+    tokenPayload: state => !state.token ? null : new JwtHelper(state.token).getDados()
   },
   modules: {
   }

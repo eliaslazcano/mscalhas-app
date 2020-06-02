@@ -1,9 +1,27 @@
 <template>
   <v-app>
     <!-- Menu lateral -->
-    <SideNav v-model="showMenu"></SideNav>
+    <v-navigation-drawer
+      app
+      clipped
+      v-if="$store.state.token"
+      v-model="showMenu"
+    >
+      <template v-slot:prepend>
+        <v-list></v-list>
+      </template>
+    </v-navigation-drawer>
     <!-- Barra de ferramentas -->
-    <AppBar></AppBar>
+    <v-app-bar
+      app
+      clipped-left
+      dark
+      color="primary"
+      v-if="$store.state.token"
+    >
+      <v-app-bar-nav-icon @click.stop="showMenu = !showMenu" />
+      <v-toolbar-title class="ml-0 pl-4">MS Calhas</v-toolbar-title>
+    </v-app-bar>
     <!-- Conteúdo -->
     <v-content>
       <transition name="fade" mode="out-in" @after-leave="scrollTop">
@@ -14,11 +32,8 @@
 </template>
 
 <script>
-import SideNav from "./components/SideNav";
-import AppBar from "./components/AppBar";
 export default {
   name: 'App',
-  components: {AppBar, SideNav},
   data: () => ({
     showMenu: null
   }),
