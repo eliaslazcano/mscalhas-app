@@ -82,6 +82,24 @@
         <router-view/>
       </transition>
     </v-content>
+    <!-- Snackbar Global -->
+    <v-snackbar
+      v-model="snackbar"
+      :top="snackbarOptions.top"
+      :bottom="snackbarOptions.bottom"
+      :left="snackbarOptions.left"
+      :right="snackbarOptions.right"
+      :timeout="snackbarOptions.timeout"
+      :vertical="snackbarOptions.vertical"
+      :multi-line="snackbarOptions.multiLine"
+      :color="snackbarOptions.color"
+      :absolute="snackbarOptions.absolute"
+    >
+      {{snackbarOptions.text}}
+      <v-btn dark icon>
+        <v-icon>mdi-close-circle</v-icon>
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -89,12 +107,37 @@
 export default {
   name: 'App',
   data: () => ({
-    showMenu: null
+    showMenu: null,
+    snackbar: false
   }),
   methods: {
     scrollTop() {
       window.scrollTo(0, 0);
     }
+  },
+  computed: {
+    snackbarVuex() {return this.$store.state.snackbar},
+    snackbarOptions() {
+      if (this.$store.state.snackbarOptions) return this.$store.state.snackbarOptions;
+      else return {
+        top: false,
+        bottom: false,
+        left: false,
+        right: false,
+        timeout: 6000,
+        vertical: false,
+        multiLine: false,
+        color: undefined,
+        absolute: false,
+        text: ''
+      };
+    }
+  },
+  watch: {
+    snackbarVuex(x) {
+      if (x) this.snackbar = true;
+    },
+    snackbar(x) {if (!x) this.$store.commit('snackbar', null)}
   }
 };
 </script>

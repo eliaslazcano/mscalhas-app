@@ -7,11 +7,45 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    token: null
+    token: null,
+    snackbar: null,
+    snackbarOptions: null
   },
   mutations: {
     signin: (state, token) => state.token = token,
-    signout: state => state.token = null
+    signout: state => state.token = null,
+    snackbar: (state, payload) => {
+      const def = {
+        top: false,
+        bottom: false,
+        left: false,
+        right: false,
+        timeout: 6000,
+        vertical: false,
+        multiLine: false,
+        color: undefined,
+        absolute: false,
+        text: ''
+      };
+      if (payload) {
+        state.snackbarOptions = def;
+        if (payload.top)        state.snackbarOptions.top       = payload.top;
+        if (payload.bottom)     state.snackbarOptions.bottom    = payload.bottom;
+        if (payload.left)       state.snackbarOptions.left      = payload.left;
+        if (payload.right)      state.snackbarOptions.right     = payload.right;
+        if (payload.timeout)    state.snackbarOptions.timeout   = payload.timeout;
+        if (payload.vertical)   state.snackbarOptions.vertical  = payload.vertical;
+        if (payload.multiLine)  state.snackbarOptions.multiLine = payload.multiLine;
+        if (payload.color)      state.snackbarOptions.color     = payload.color;
+        if (payload.absolute)   state.snackbarOptions.absolute  = payload.absolute;
+        if (payload.text)       state.snackbarOptions.text      = payload.text;
+        state.snackbar = true;
+      }
+      else {
+        state.snackbar = null;
+        state.snackbarOptions = null;
+      }
+    }
   },
   actions: {
     initialiseStore({state}) {
