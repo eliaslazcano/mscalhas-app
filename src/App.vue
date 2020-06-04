@@ -84,19 +84,20 @@
     </v-content>
     <!-- Snackbar Global -->
     <v-snackbar
-      v-model="snackbar"
-      :top="snackbarOptions.top"
-      :bottom="snackbarOptions.bottom"
-      :left="snackbarOptions.left"
-      :right="snackbarOptions.right"
-      :timeout="snackbarOptions.timeout"
-      :vertical="snackbarOptions.vertical"
-      :multi-line="snackbarOptions.multiLine"
-      :color="snackbarOptions.color"
-      :absolute="snackbarOptions.absolute"
+      :top="$store.state.snackbarOptions.top"
+      :bottom="$store.state.snackbarOptions.bottom"
+      :left="$store.state.snackbarOptions.left"
+      :right="$store.state.snackbarOptions.right"
+      :timeout="$store.state.snackbarOptions.timeout"
+      :vertical="$store.state.snackbarOptions.vertical"
+      :multi-line="$store.state.snackbarOptions.multiLine"
+      :color="$store.state.snackbarOptions.color"
+      :absolute="$store.state.snackbarOptions.absolute"
+      :value="$store.state.snackbar"
+      @input="$store.commit('snackbar', false)"
     >
-      {{snackbarOptions.text}}
-      <v-btn dark icon @click="snackbar = false">
+      {{$store.state.snackbarOptions.text}}
+      <v-btn dark icon @click="$store.commit('snackbar', false)">
         <v-icon>mdi-close-circle</v-icon>
       </v-btn>
     </v-snackbar>
@@ -107,37 +108,12 @@
 export default {
   name: 'App',
   data: () => ({
-    showMenu: null,
-    snackbar: false
+    showMenu: null
   }),
   methods: {
     scrollTop() {
       window.scrollTo(0, 0);
     }
-  },
-  computed: {
-    snackbarVuex() {return this.$store.state.snackbar},
-    snackbarOptions() {
-      if (this.$store.state.snackbarOptions) return this.$store.state.snackbarOptions;
-      else return {
-        top: false,
-        bottom: false,
-        left: false,
-        right: false,
-        timeout: 4500,
-        vertical: false,
-        multiLine: false,
-        color: undefined,
-        absolute: false,
-        text: ''
-      };
-    }
-  },
-  watch: {
-    snackbarVuex(x) {
-      if (x) this.snackbar = true;
-    },
-    snackbar(x) {if (!x) this.$store.commit('snackbar', null)}
   }
 };
 </script>
