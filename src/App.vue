@@ -96,7 +96,7 @@
       :absolute="snackbarOptions.absolute"
     >
       {{snackbarOptions.text}}
-      <v-btn dark icon>
+      <v-btn dark icon @click="snackbar = false">
         <v-icon>mdi-close-circle</v-icon>
       </v-btn>
     </v-snackbar>
@@ -124,7 +124,7 @@ export default {
         bottom: false,
         left: false,
         right: false,
-        timeout: 6000,
+        timeout: 4500,
         vertical: false,
         multiLine: false,
         color: undefined,

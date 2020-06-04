@@ -20,7 +20,7 @@ export default new Vuex.Store({
         bottom: false,
         left: false,
         right: false,
-        timeout: 6000,
+        timeout: 4500,
         vertical: false,
         multiLine: false,
         color: undefined,

@@ -1,9 +1,13 @@
 <template>
-  <h1></h1>
+  <v-container>
+    <table-cheques></table-cheques>
+  </v-container>
 </template>
 
 <script>
-    export default {
-        name: "Cheques"
-    }
+  import TableCheques from "../components/TableCheques";
+  export default {
+    name: "Cheques",
+    components: {TableCheques}
+  }
 </script>

@@ -1,17 +1,17 @@
 <template>
   <v-card>
     <v-card-title class="justify-space-between">
-      Serviços
+      Cheques
       <v-btn color="success">Adicionar</v-btn>
     </v-card-title>
     <v-card-text>
       <v-data-table
-        :items="servicos"
+        :items="cheques"
         :headers="headers"
         :loading="loading"
         sort-by="id"
         sort-desc
-        no-data-text="Nenhum serviço encontrado"
+        no-data-text="Nenhum cheque encontrado"
       ></v-data-table>
     </v-card-text>
   </v-card>
@@ -19,24 +19,20 @@
 
 <script>
   export default {
-    name: "TableServicos",
+    name: "TableCheques",
     data: () => ({
       loading: true,
-      servicos: [],
+      cheques: [],
       headers: [
-        {text: 'Cod.', value: 'id'},
-        {text: 'Cliente', value: 'cliente_nome'},
-        {text: 'Status', value: 'status'},
-        {text: 'Valor', value: 'valor'},
-        {text: 'Responsável', value: 'socio_responsavel_nome'}
+        {text: 'Cod.', value: 'id'}
       ]
     }),
     methods: {
       async loadData() {
         this.loading = true;
         try {
-          const {data: servicos} = await this.$http.get('/servicos');
-          this.servicos = servicos;
+          const {data: cheques} = await this.$http.get('/cheques');
+          this.cheques = cheques;
         } finally {
           this.loading = false;
         }

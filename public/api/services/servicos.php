@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__.'/../helper/HttpHelper.php';
 require_once __DIR__.'/../helper/AuthHelper.php';
-require_once __DIR__.'/../helper/StringHelper.php';
 require_once __DIR__.'/../database/DbMscalhas.php';
 
 HttpHelper::validarMetodos(array('GET')); //,'POST','PUT','DELETE'
