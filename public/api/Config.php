@@ -24,7 +24,7 @@ class Config
   const EMAIL_PORTA = 587;
   const EMAIL_TLS   = true; //false = SSL, true = TLS
   const EMAIL_LOGIN = "sistemamscalhas@gmail.com";
-  const EMAIL_SENHA = "djhwgvweohrublpd";
+  const EMAIL_SENHA = "djhwgvweohrublpd"; //Senha WEB: 30251154
   const EMAIL_NOME  = "MS Calhas: Sistema de Gestão";
   const EMAIL_RESPONDEDOR_ENDERECO  = "mscalhas7125@hotmail.com";
   const EMAIL_RESPONDEDOR_NOME      = "MS Calhas";

@@ -8,6 +8,6 @@ AuthHelper::sessionValidate();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
-  $servicos = DbMscalhas::fastQuery("SELECT se.id, se.status, se.socio_responsavel socio_responsavel_id, so.nome socio_responsavel_nome, se.valor, se.cliente_nome, se.data_criacao FROM servicos se LEFT JOIN socios so ON se.socio_responsavel = so.id ORDER BY se.id DESC", array('id', 'status', 'socio_responsavel_id', 'valor'));
+  $servicos = DbMscalhas::fastQuery("SELECT s.id, s.socio_responsavel socio_responsavel_id, so.nome socio_responsavel_nome, s.valor, s.cliente_nome, s.data_criacao, s.data_finalizacao FROM servicos s LEFT JOIN socios so ON s.socio_responsavel = so.id ORDER BY s.id DESC", array('id', 'socio_responsavel_id', 'valor'));
   HttpHelper::emitirJson($servicos);
 }

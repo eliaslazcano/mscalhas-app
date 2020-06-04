@@ -4,13 +4,12 @@ create table socios
         primary key,
     nome varchar(150) not null
 )
-    comment 'Quadro societario da empresa';
+    comment 'Quadro societario da empresa.';
 
 create table servicos
 (
     id                   int auto_increment
         primary key,
-    status               int      default 0                   not null,
     socio_responsavel    int                                  null,
     valor                decimal(13, 2)                       null,
     cliente_nome         varchar(120)                         not null,
@@ -25,12 +24,14 @@ create table servicos
     contato_fone         varchar(11)                          null,
     contato_fone2        varchar(11)                          null,
     data_criacao         datetime default current_timestamp() not null,
+    data_finalizacao     datetime                             null comment 'NULL = Em andamento; !=NULL = Concluido.',
     descricao            mediumtext                           null comment 'Descreve o serviço que deve ser realizado',
     observacao           mediumtext                           null comment 'Lembretes e anotações extras',
     constraint servicos_socios_id_fk
         foreign key (socio_responsavel) references socios (id)
             on update cascade on delete set null
-);
+)
+    comment 'Serviços realizados pela empresa.';
 
 create table cheques
 (
@@ -49,7 +50,29 @@ create table cheques
     constraint cheques_servicos_id_fk
         foreign key (servico) references servicos (id)
             on update cascade on delete set null
-);
+)
+    comment 'Cheques registrados pela empresa.';
+
+create table pagamentos
+(
+    id      int auto_increment
+        primary key,
+    tipo    int            not null comment '0=Dinheiro;
+1=Crédito;
+2=Débito;
+3=Cheque;
+4=Outro;',
+    valor   decimal(13, 2) not null,
+    servico int            null,
+    cheque  int            null comment 'Somente transações em cheque (tipo 3). Vincula a tabela de cheques.',
+    constraint pagamentos_cheques_id_fk
+        foreign key (cheque) references cheques (id)
+            on update cascade on delete cascade,
+    constraint pagamentos_servicos_id_fk
+        foreign key (servico) references servicos (id)
+            on update cascade on delete cascade
+)
+    comment 'Transações realizadas para pagar serviços';
 
 create table usuarios
 (
@@ -61,7 +84,8 @@ create table usuarios
     email varchar(255)                           not null,
     desde datetime   default current_timestamp() not null,
     ativo tinyint(1) default 1                   not null
-);
+)
+    comment 'Contas de acesso ao sistema.';
 
 create table sessoes
 (
@@ -74,6 +98,7 @@ create table sessoes
     constraint sessoes_usuarios_id_fk
         foreign key (usuario) references usuarios (id)
             on update cascade on delete cascade
-);
+)
+    comment 'Logins realizados no sistema.';
 
 

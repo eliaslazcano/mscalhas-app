@@ -1,0 +1,20 @@
+{
+  "Notas da base de dados": {
+    "Servicos": {
+      "status": {
+        "1": "Aprovado",
+        "3": "Finalizado"
+      },
+      "FormaPagamento": {
+        "0": "Dinheiro",
+        "1": "Cheque",
+        "2": "Dinheiro + Cheque",
+        "3": "Cartão de Crédito",
+        "4": "Cartão de Débito",
+        "5": "Não está pago",
+        "6": "Parcelado em Cheques",
+        "7": "Outro"
+      }
+    }
+  }
+}

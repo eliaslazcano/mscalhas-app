@@ -1,24 +1,12 @@
-# mscalhas-app
-
-## Project setup
+# MS CALHAS
+Sistema WEB desenvolvido em arquitetura REST, sendo FRONTEND em Vue.js e BACKEND em PHP7 e MySQL. Autenticação por JWT.
+  
+## Instruções de terminal
+Instale as dependências
+```  
+npm install  
+```    
+Compile o projeto produção (servido na pasta **dist**)
 ```
-npm install
+npm run build  
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
