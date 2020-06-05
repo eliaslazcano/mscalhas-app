@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <table-cheques></table-cheques>
   </v-container>
 </template>
