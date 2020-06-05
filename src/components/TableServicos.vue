@@ -12,7 +12,13 @@
         sort-by="id"
         sort-desc
         no-data-text="Nenhum serviço encontrado"
-      ></v-data-table>
+      >
+        <template v-slot:item.status="{item}">
+          <span v-if="item.data_finalizacao" class="green--text">FINALIZADO</span>
+          <span v-else class="amber--text">EM ANDAMENTO</span>
+        </template>
+        <template v-slot:item.valor="{item}">R$ {{item.valor.toFixed(2).replace('.', ',')}}</template>
+      </v-data-table>
     </v-card-text>
   </v-card>
 </template>

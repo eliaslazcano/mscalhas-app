@@ -6,10 +6,10 @@
         <v-card color="amber" dark height="8.5rem" class="d-flex flex-column">
           <v-card-subtitle class="pb-0 text-center"><v-icon class="mr-2">mdi-progress-wrench</v-icon>STATUS DO SERVIÇO</v-card-subtitle>
           <div class="flex-grow-1 d-flex align-center justify-center">
-            <v-card-title class="py-0 justify-center">EM ANDAMENTO</v-card-title>
+            <v-card-title class="py-0 justify-center">{{finalizado ? 'FINALIZADO' : 'EM ANDAMENTO'}}</v-card-title>
           </div>
           <div class="d-flex justify-center">
-            <v-btn outlined class="mb-2">Mudar para finalizado</v-btn>
+            <v-btn outlined class="mb-2">{{finalizado ? 'Voltar para "em andamento"' : 'Mudar para finalizado'}}</v-btn>
           </div>
         </v-card>
       </v-col>
@@ -197,9 +197,10 @@
     </v-card>
     <!-- Botões -->
     <div class="d-flex justify-center">
-      <v-btn color="primary" @click="saveData">
+      <v-btn color="primary" @click="saveData" class="mr-2">
         <v-icon class="mr-1">mdi-sd</v-icon>GRAVAR {{id ? 'ALTERAÇÕES' : 'SERVIÇO'}}
       </v-btn>
+      <v-btn color="primary" outlined to="/servicos">{{id ? 'VOLTAR' : 'CANCELAR'}}</v-btn>
     </div>
     <!-- DEBUG -->
     <div class="pa-1 mb-1 ml-1" style="border: 1px solid black; position: fixed; left: 0; bottom: 0; background-color: rgba(255,255,255,.75); font-size: .6rem; z-index: 999">
@@ -222,6 +223,9 @@
       socios: [],
       servico: {}
     }),
+    computed: {
+      finalizado() {return this.servico ? (!!this.servico.data_finalizacao) : null}
+    },
     methods: {
       async loadData() {
         this.loading = true;
