@@ -15,7 +15,7 @@ AuthHelper::sessionValidate();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
-  $socios = DbMscalhas::fastQuery("SELECT id, nome FROM socios ORDER BY nome", array('id'));
+  $socios = DbMscalhas::fastQuery("SELECT id, nome FROM socios WHERE ativo = 1 ORDER BY nome", array('id'));
   HttpHelper::emitirJson($socios);
 }
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
@@ -23,7 +23,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
   $nome = HttpHelper::validarParametro('nome');
   $query = "INSERT INTO socios (nome) VALUES (:nome)";
   $db = new DbMscalhas();
-  $statement = $db->getConn()->prepare($query);
+  $statement = $db->prepare($query);
   $statement->bindValue(':nome', StringHelper::toUpperCase($nome));
   if (!$statement->execute()) HttpHelper::erroJson(500, 'Falhas na base de dados');
 }
@@ -33,7 +33,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT')
   $nome = HttpHelper::validarParametro('nome');
   $query = "UPDATE socios SET nome = :nome WHERE id = :id";
   $db = new DbMscalhas();
-  $statement = $db->getConn()->prepare($query);
+  $statement = $db->prepare($query);
   $statement->bindValue(':nome', StringHelper::toUpperCase($nome));
   $statement->bindValue(':id', $id);
   if (!$statement->execute()) HttpHelper::erroJson(500, 'Falhas na base de dados');
@@ -41,9 +41,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT')
 elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE')
 {
   $id    = HttpHelper::validarParametro('id');
-  $query = "DELETE FROM socios WHERE id = :id";
+  $query = "UPDATE socios SET ativo = 0 WHERE id = :id";
   $db = new DbMscalhas();
-  $statement = $db->getConn()->prepare($query);
+  $statement = $db->prepare($query);
   $statement->bindValue(':id', $id);
   if (!$statement->execute()) HttpHelper::erroJson(500, 'Falhas na base de dados');
 }

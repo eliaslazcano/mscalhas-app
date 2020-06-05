@@ -7,6 +7,8 @@ import './plugins/vmoney'
 import '@babel/polyfill'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
+import '@/assets/custom.css'
+import '@/assets/custom-form.css'
 import './http'
 
 Vue.config.productionTip = false;
