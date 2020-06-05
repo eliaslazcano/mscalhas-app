@@ -14,7 +14,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/Login'),
+    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
     meta: {
       public: true
     }
@@ -28,6 +28,12 @@ const routes = [
     path: '/servicos',
     name: 'Servicos',
     component: () => import('../views/Servicos.vue')
+  },
+  {
+    path: '/servico/:id?',
+    name: 'Servico',
+    component: () => import('../views/Servico.vue'),
+    props: true
   },
   {
     path: '/cheques',

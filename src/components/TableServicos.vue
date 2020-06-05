@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title class="justify-space-between">
       Serviços
-      <v-btn color="success">Adicionar</v-btn>
+      <v-btn color="success" to="/servico">Adicionar</v-btn>
     </v-card-title>
     <v-card-text>
       <v-data-table

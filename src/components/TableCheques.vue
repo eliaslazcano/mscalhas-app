@@ -120,22 +120,24 @@
           <v-chip v-else-if="item.dias_restantes > 0" color="info" small class="my-1">{{item.dias_restantes === 1 ? 'Falta 1 dia' : 'Faltam ' + item.dias_restantes + ' dias'}}</v-chip>
         </template>
         <template v-slot:item.actions="{item}">
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn icon color="error" @click="deleteCheque(item)" :disabled="loading" v-on="on">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </template>
-            <span>Remover</span>
-          </v-tooltip>
-          <v-tooltip top v-if="!item.data_compensado">
-            <template v-slot:activator="{on}">
-              <v-btn icon color="success" :disabled="loading || (hoje < item.data_cheque)" v-on="on" @click="() => {dialogCompensarCheque = item; dialogCompensarShow = true}">
-                <v-icon>mdi-checkbox-marked-circle-outline</v-icon>
-              </v-btn>
-            </template>
-            <span>Marcar como compensado</span>
-          </v-tooltip>
+          <div class="d-flex flex-nowrap">
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn icon color="error" @click="deleteCheque(item)" :disabled="loading" v-on="on">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </template>
+              <span>Remover</span>
+            </v-tooltip>
+            <v-tooltip top v-if="!item.data_compensado">
+              <template v-slot:activator="{on}">
+                <v-btn icon color="success" :disabled="loading || (hoje < item.data_cheque)" v-on="on" @click="() => {dialogCompensarCheque = item; dialogCompensarShow = true}">
+                  <v-icon>mdi-checkbox-marked-circle-outline</v-icon>
+                </v-btn>
+              </template>
+              <span>Marcar como compensado</span>
+            </v-tooltip>
+          </div>
         </template>
       </v-data-table>
     </v-card-text>
