@@ -57,6 +57,16 @@ class DbMscalhas
     else return $result;
   }
 
+  /**
+   * Realiza um PREPARE do PDO, retornando o Statement.
+   * @param $sql
+   * @return bool|PDOStatement
+   */
+  public function prepare($sql): PDOStatement
+  {
+    return $this->conn->prepare($sql);
+  }
+
     /**
      * Adapta resultados do PDO, que colunas numéricas passem de string para INT|DOUBLE. O conversor irá ignorar strings que não contenham dígito numérico.
      * @param array $lines Matriz de $matriz[nLinha][nomeColuna]

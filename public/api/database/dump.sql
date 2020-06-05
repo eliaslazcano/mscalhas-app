@@ -37,16 +37,17 @@ create table cheques
 (
     id              int auto_increment
         primary key,
-    numcheque       varchar(100)   null,
     cliente         varchar(100)   null,
     banco           varchar(50)    null comment 'nome do banco',
     agencia         varchar(20)    null,
     conta           varchar(20)    null,
-    servico         int            null comment 'Servico vinculado como forma de pagamento',
-    tipo            int            not null,
+    tipo            int            not null comment '0=saque em dinheiro;
+1=deposito em conta (cruzado/riscado);',
+    numcheque       varchar(100)   null,
     valor           decimal(13, 2) null,
     data_cheque     date           null comment 'Para cheques datados, a partir desta data o dinheiro pode ser resgatado',
     data_compensado date           null comment 'Data que o dinheiro do cheque foi resgatado',
+    servico         int            null comment 'Servico vinculado como forma de pagamento',
     constraint cheques_servicos_id_fk
         foreign key (servico) references servicos (id)
             on update cascade on delete set null
