@@ -80,4 +80,15 @@ class StringHelper
     if ($len == 0) return true;
     return (substr($fullString, -$len) === $endString);
   }
+
+  /**
+   * Encontra a posição da primeira ocorrência de uma string
+   * @param $fullString
+   * @param $searchString
+   * @return false|int Retorna a posição numérica da primeira ocorrência
+   */
+  public static function contains($fullString, $searchString)
+  {
+    return strpos($fullString, $searchString);
+  }
 }

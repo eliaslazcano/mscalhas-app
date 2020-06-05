@@ -67,6 +67,16 @@ class DbMscalhas
     return $this->conn->prepare($sql);
   }
 
+  /**
+   * Executa uma instrução SQL e retornar o número de linhas afetadas. Ideal para um rápido INSERT, UPDATE ou DELETE.
+   * @param $sql
+   * @return false|int
+   */
+  public function exec($sql)
+  {
+    return $this->conn->exec($sql);
+  }
+
     /**
      * Adapta resultados do PDO, que colunas numéricas passem de string para INT|DOUBLE. O conversor irá ignorar strings que não contenham dígito numérico.
      * @param array $lines Matriz de $matriz[nLinha][nomeColuna]

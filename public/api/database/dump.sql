@@ -1,8 +1,9 @@
 create table socios
 (
-    id   int auto_increment
+    id    int auto_increment
         primary key,
-    nome varchar(150) not null
+    nome  varchar(150)         not null,
+    ativo tinyint(1) default 1 not null
 )
     comment 'Quadro societario da empresa.';
 
@@ -10,23 +11,23 @@ create table servicos
 (
     id                   int auto_increment
         primary key,
-    socio_responsavel    int                                  null,
-    valor                decimal(13, 2)                       null,
-    cliente_nome         varchar(120)                         not null,
-    cliente_cpfcnpj      varchar(14)                          null,
-    endereco_numero      varchar(120)                         null,
-    endereco_logradouro  varchar(120)                         null,
-    endereco_bairro      varchar(120)                         null,
-    endereco_cidade      varchar(120)                         null,
-    endereco_uf          varchar(120)                         null,
-    endereco_complemento varchar(120)                         null,
-    contato_email        varchar(120)                         null,
-    contato_fone         varchar(11)                          null,
-    contato_fone2        varchar(11)                          null,
-    data_criacao         datetime default current_timestamp() not null,
-    data_finalizacao     datetime                             null comment 'NULL = Em andamento; !=NULL = Concluido.',
-    descricao            mediumtext                           null comment 'Descreve o serviço que deve ser realizado',
-    observacao           mediumtext                           null comment 'Lembretes e anotações extras',
+    socio_responsavel    int                                        null,
+    valor                decimal(13, 2) default 0.00                not null,
+    cliente_nome         varchar(120)                               not null,
+    cliente_cpfcnpj      varchar(14)                                null,
+    endereco_numero      varchar(120)                               null,
+    endereco_logradouro  varchar(120)                               null,
+    endereco_bairro      varchar(120)                               null,
+    endereco_cidade      varchar(120)                               null,
+    endereco_uf          varchar(120)                               null,
+    endereco_complemento varchar(120)                               null,
+    contato_email        varchar(120)                               null,
+    contato_fone         varchar(11)                                null,
+    contato_fone2        varchar(11)                                null,
+    data_criacao         datetime       default current_timestamp() not null,
+    data_finalizacao     datetime                                   null comment 'NULL = Em andamento; !=NULL = Concluido.',
+    descricao            mediumtext                                 null comment 'Descreve o serviço que deve ser realizado',
+    observacao           mediumtext                                 null comment 'Lembretes e anotações extras',
     constraint servicos_socios_id_fk
         foreign key (socio_responsavel) references socios (id)
             on update cascade on delete set null
