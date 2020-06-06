@@ -162,7 +162,6 @@
 </template>
 
 <script>
-  //TODO: Funcao para excluir um cheque, exceto se ele estiver interligado a um serviço.
   //TODO: Funcao alterar um cheque, exceto se ele ja foi compensado.
   //TODO: Exibir o total de dinheiro a resgatar dos cheques (soma do valor de todos os cheques nao compensados).
   //TODO: Subdividir o valor acima em "Deposito em conta" e "Saque em dinheiro".
@@ -260,7 +259,7 @@
       },
       async deleteCheque(cheque) {
         if (cheque.servico) {
-          alert('Este cheque não pode ser apagado por aqui. Ele pertence ao pagamento de um serviço. Vá até a ficha do serviço e modifique o pagamento por lá.');
+          alert(`Este cheque não pode ser apagado por aqui. Ele está vinculado a uma ordem de serviço. Se deseja apagar mesmo assim, vá até a ficha do serviço número ${cheque.servico} e modifique o pagamento por lá.`);
           return;
         }
         if (!confirm(`Tem certeza que deseja remover este cheque de ${cheque.cliente.toUpperCase()} no valor de R$ ${cheque.valor.toFixed(2).replace('.', ',')} ?`)) return;
