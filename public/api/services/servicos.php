@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../helper/HttpHelper.php';
 require_once __DIR__.'/../helper/AuthHelper.php';
+require_once __DIR__.'/../helper/StringHelper.php';
 require_once __DIR__.'/../database/DbMscalhas.php';
 
 HttpHelper::validarMetodos(array('GET','POST','PUT'));
@@ -49,19 +50,19 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
   $statement = $db->prepare($query);
   $statement->bindValue(':socio_responsavel', $socio_responsavel);
   $statement->bindValue(':valor', $valor ? $valor : '0');
-  $statement->bindValue(':cliente_nome', $cliente_nome);
+  $statement->bindValue(':cliente_nome', StringHelper::toUpperCase($cliente_nome));
   $statement->bindValue(':cliente_cpfcnpj', $cliente_cpfcnpj);
   $statement->bindValue(':endereco_numero', $endereco_numero);
-  $statement->bindValue(':endereco_logradouro', $endereco_logradouro);
-  $statement->bindValue(':endereco_bairro', $endereco_bairro);
-  $statement->bindValue(':endereco_cidade', $endereco_cidade);
-  $statement->bindValue(':endereco_uf', $endereco_uf);
-  $statement->bindValue(':endereco_complemento', $endereco_complemento);
+  $statement->bindValue(':endereco_logradouro', StringHelper::toUpperCase($endereco_logradouro));
+  $statement->bindValue(':endereco_bairro', StringHelper::toUpperCase($endereco_bairro));
+  $statement->bindValue(':endereco_cidade', StringHelper::toUpperCase($endereco_cidade));
+  $statement->bindValue(':endereco_uf', StringHelper::toUpperCase($endereco_uf));
+  $statement->bindValue(':endereco_complemento', StringHelper::toUpperCase($endereco_complemento));
   $statement->bindValue(':contato_email', $contato_email);
-  $statement->bindValue(':contato_fone', $contato_fone);
-  $statement->bindValue(':contato_fone2', $contato_fone2);
-  $statement->bindValue(':descricao', $descricao);
-  $statement->bindValue(':observacao', $observacao);
+  $statement->bindValue(':contato_fone', StringHelper::extractNumbers($contato_fone));
+  $statement->bindValue(':contato_fone2', StringHelper::extractNumbers($contato_fone2));
+  $statement->bindValue(':descricao', trim($descricao));
+  $statement->bindValue(':observacao', trim($observacao));
   if (!$statement->execute()) HttpHelper::erroJson(500, "Falha na base de dados", 0, $statement->errorInfo());
   HttpHelper::emitirJson($db->getConn()->lastInsertId());
 }
@@ -90,19 +91,19 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT')
   $statement = $db->prepare($query);
   $statement->bindValue(':socio_responsavel', $socio_responsavel);
   $statement->bindValue(':valor', $valor ? $valor : '0');
-  $statement->bindValue(':cliente_nome', $cliente_nome);
+  $statement->bindValue(':cliente_nome', StringHelper::toUpperCase($cliente_nome));
   $statement->bindValue(':cliente_cpfcnpj', $cliente_cpfcnpj);
   $statement->bindValue(':endereco_numero', $endereco_numero);
-  $statement->bindValue(':endereco_logradouro', $endereco_logradouro);
-  $statement->bindValue(':endereco_bairro', $endereco_bairro);
-  $statement->bindValue(':endereco_cidade', $endereco_cidade);
-  $statement->bindValue(':endereco_uf', $endereco_uf);
-  $statement->bindValue(':endereco_complemento', $endereco_complemento);
+  $statement->bindValue(':endereco_logradouro', StringHelper::toUpperCase($endereco_logradouro));
+  $statement->bindValue(':endereco_bairro', StringHelper::toUpperCase($endereco_bairro));
+  $statement->bindValue(':endereco_cidade', StringHelper::toUpperCase($endereco_cidade));
+  $statement->bindValue(':endereco_uf', StringHelper::toUpperCase($endereco_uf));
+  $statement->bindValue(':endereco_complemento', StringHelper::toUpperCase($endereco_complemento));
   $statement->bindValue(':contato_email', $contato_email);
-  $statement->bindValue(':contato_fone', $contato_fone);
-  $statement->bindValue(':contato_fone2', $contato_fone2);
-  $statement->bindValue(':descricao', $descricao);
-  $statement->bindValue(':observacao', $observacao);
+  $statement->bindValue(':contato_fone', StringHelper::extractNumbers($contato_fone));
+  $statement->bindValue(':contato_fone2', StringHelper::extractNumbers($contato_fone2));
+  $statement->bindValue(':descricao', trim($descricao));
+  $statement->bindValue(':observacao', trim($observacao));
   $statement->bindValue(':data_finalizacao', $data_finalizacao);
   $statement->bindValue(':id', $id);
   if (!$statement->execute()) HttpHelper::erroJson(500, "Falha na base de dados", 0, $statement->errorInfo());

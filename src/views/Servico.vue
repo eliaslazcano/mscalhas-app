@@ -3,24 +3,34 @@
     <!-- Status e Pagamento -->
     <v-row>
       <v-col cols="12" sm="6">
-        <v-card color="amber" dark height="8.5rem" class="d-flex flex-column">
+        <v-card :color="finalizado ? 'success' : 'amber'" dark height="9.2rem" class="d-flex flex-column">
           <v-card-subtitle class="pb-0 text-center"><v-icon class="mr-2">mdi-progress-wrench</v-icon>STATUS DO SERVIÇO</v-card-subtitle>
-          <div class="flex-grow-1 d-flex align-center justify-center">
+          <div class="flex-grow-1 d-flex align-center justify-center flex-column">
             <v-card-title class="py-0 justify-center">{{finalizado ? 'FINALIZADO' : 'EM ANDAMENTO'}}</v-card-title>
+            <p v-if="finalizado" class="caption mb-0">EM {{corrigeDateTime(servico.data_finalizacao)}}</p>
           </div>
           <div class="d-flex justify-center">
-            <v-btn outlined class="mb-2">{{finalizado ? 'Voltar para "em andamento"' : 'Mudar para finalizado'}}</v-btn>
+            <v-btn
+              outlined
+              class="mb-2"
+              :disabled="loading"
+              @click="switchFinished"
+            >{{finalizado ? 'Voltar para "em andamento"' : 'Mudar para finalizado'}}</v-btn>
           </div>
         </v-card>
       </v-col>
       <v-col cols="12" sm="6">
-        <v-card color="red" dark height="8.5rem" class="d-flex flex-column">
+        <v-card color="red" dark height="9.2rem" class="d-flex flex-column">
           <v-card-subtitle class="pb-0 text-center"><v-icon class="mr-2">mdi-cash-multiple</v-icon>PAGAMENTO</v-card-subtitle>
           <div class="flex-grow-1 d-flex align-center justify-center">
             <v-card-title class="py-0 justify-center">NÃO FOI PAGO</v-card-title>
           </div>
           <div class="d-flex justify-center">
-            <v-btn outlined class="mb-2">Ajustar pagamentos</v-btn>
+            <v-btn
+              outlined
+              class="mb-2"
+              :disabled="loading"
+            >Ajustar pagamentos</v-btn>
           </div>
         </v-card>
       </v-col>
@@ -213,6 +223,8 @@
 </template>
 
 <script>
+  //TODO - Tela de pagamentos.
+  import {DateHelper} from 'eliaslazcano-helpers'
   export default {
     name: "Servico",
     props: {
@@ -250,6 +262,14 @@
         } finally {
           this.loading = false;
         }
+      },
+      async switchFinished() {
+        //Alterna entre 'finalizado' e 'em andamento'
+        this.servico.data_finalizacao = (this.finalizado) ? null : DateHelper.datetime_SQLagora();
+        await this.saveData();
+      },
+      corrigeDateTime(datetime) {
+        return DateHelper.datetime_SQLparaBR(datetime);
       }
     },
     async created() {

@@ -72,7 +72,7 @@
       v-if="$store.state.token"
     >
       <v-app-bar-nav-icon @click.stop="showMenu = !showMenu" />
-      <v-toolbar-title class="ml-0 pl-4">MS Calhas</v-toolbar-title>
+      <v-toolbar-title class="ml-0 pl-4">MS CALHAS</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn light @click="() => {$store.commit('signout'); $router.push('/login')}">Sair</v-btn>
     </v-app-bar>

@@ -12,6 +12,7 @@
         sort-by="id"
         sort-desc
         no-data-text="Nenhum serviço encontrado"
+        @click:row="abrirServico"
       >
         <template v-slot:item.status="{item}">
           <span v-if="item.data_finalizacao" class="green--text">FINALIZADO</span>
@@ -46,10 +47,17 @@
         } finally {
           this.loading = false;
         }
-      }
+      },
+      abrirServico(a) {this.$router.push('/servico/' + a.id)}
     },
     created() {
       this.loadData();
     }
   }
 </script>
+
+<style>
+  .v-data-table tbody tr:hover {
+    cursor: pointer;
+  }
+</style>

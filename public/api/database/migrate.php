@@ -75,12 +75,12 @@ foreach ($servicos as $servico) {
   $statement->bindValue(':cliente_nome', StringHelper::toUpperCase($servico['Cliente']));
   $statement->bindValue(':cliente_cpfcnpj', $servico['CpfCnpj'] ? StringHelper::extractNumbers($servico['CpfCnpj']) : null);
   $statement->bindValue(':endereco_numero', $numero ? $numero : null);
-  $statement->bindValue(':endereco_logradouro', $logradouro ? $logradouro : $numero);
+  $statement->bindValue(':endereco_logradouro', $logradouro ? $logradouro : null);
   $statement->bindValue(':endereco_bairro', trim($servico['Bairro']) ? StringHelper::toUpperCase($servico['Bairro']) : null);
   $statement->bindValue(':endereco_cidade', trim($servico['Cidade']) ? StringHelper::toUpperCase($servico['Cidade']) : null);
   $statement->bindValue(':endereco_uf', $servico['EstadoUF'] ? substr($servico['EstadoUF'], 0 , 2) : null);
   $statement->bindValue(':endereco_complemento', trim($servico['Complemento']) ? StringHelper::toUpperCase($servico['Complemento']) : null);
-  $statement->bindValue(':contato_email', trim($servico['Email']) ? trim($servico['Email']) : $numero);
+  $statement->bindValue(':contato_email', trim($servico['Email']) ? trim($servico['Email']) : null);
   $statement->bindValue(':contato_fone', $fone1 ? $fone1 : null);
   $statement->bindValue(':contato_fone2', $fone2 ? $fone2 : null);
   $statement->bindValue(':data_criacao', substr($servico['DataCriacao'], 0, 4).'-'.substr($servico['DataCriacao'], 4, 2).'-'.substr($servico['DataCriacao'], 6, 2).' 00:00:00');
