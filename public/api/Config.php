@@ -8,10 +8,10 @@ class Config
   const HOSPEDAGEM_URL = "http://mscalhas.com.br";
 
   //Banco de dados
-  const DATABASE_HOST     = "localhost";
+  const DATABASE_HOST     = "186.219.220.111";
   const DATABASE_NAME     = "mscalhas";
-  const DATABASE_USER     = "root";
-  const DATABASE_PASSWD   = "";
+  const DATABASE_USER     = "mscalhas";
+  const DATABASE_PASSWD   = "r1h4ppy2";
   const DATABASE_TIMEZONE = "-04:00";
   const DATABASE_CHARSET  = "utf8";
 
