@@ -254,7 +254,6 @@
 </template>
 
 <script>
-  //TODO - Desabilitar os botões de pagamento e status se ID for nulo (está criando). Com a mensagem de "Grave o serviço para alterar".
   import {DateHelper} from 'eliaslazcano-helpers'
   import DialogPagamentos from "../components/DialogPagamentos";
   export default {
