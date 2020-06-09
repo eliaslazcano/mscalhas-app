@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
     if (count($servico) === 0) HttpHelper::erroJson(400, "Serviço não encontrado", 1);
     $servico = $db->serializeNumericColumns($servico, array('id','socio_responsavel','valor'));
     $servico = $servico[0];
-    $servico['pagamentos'] = $db->query("SELECT id, tipo, valor, cheque FROM pagamentos WHERE servico = ".$id, array('id', 'tipo', 'valor', 'cheque'));
+    $servico['pagamentos'] = $db->query("SELECT id, tipo, valor, parcelas, cheque, data_registro, data_pagamento FROM pagamentos WHERE servico = ".$id, array('id', 'tipo', 'valor', 'parcelas', 'cheque'));
     HttpHelper::emitirJson($servico);
   }
 }

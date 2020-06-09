@@ -211,9 +211,9 @@
       <v-btn color="primary" outlined to="/servicos">{{id ? 'VOLTAR' : 'CANCELAR'}}</v-btn>
     </div>
     <!-- Painel de pagamentos -->
-    <dialog-pagamentos v-if="id" v-model="dialogPagamentos" :servico="servico"></dialog-pagamentos>
+    <dialog-pagamentos v-if="id" v-model="dialogPagamentos" :servico.sync="servico"></dialog-pagamentos>
     <!-- DEBUG -->
-    <div class="pa-1 mb-1 ml-1" style="border: 1px solid black; position: fixed; left: 0; bottom: 0; background-color: rgba(255,255,255,.75); font-size: .6rem; z-index: 999">
+    <div class="pa-1 mb-1 ml-1" style="border: 1px solid black; position: fixed; left: 0; bottom: 0; background-color: rgba(255,255,255,.2); font-size: .6rem; z-index: 999">
       <pre>ID: {{id === null ? 'null' : id}}</pre>
       <hr>
       <p class="caption mb-1">servico</p>

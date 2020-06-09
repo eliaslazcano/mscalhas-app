@@ -32,6 +32,34 @@
                   dense
                 ></v-select>
 
+                <v-menu
+                  v-model="showDatepickerNewCheque"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  top
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <div>
+                      <p class="mb-0">Data do recebimento</p>
+                      <v-text-field
+                        label="Data do recebimento"
+                        prepend-inner-icon="mdi-calendar"
+                        readonly
+                        v-on="on"
+                        persistent-hint
+                        v-model="inputDataBr"
+                        :disabled="loading"
+                        solo
+                        dense
+                      ></v-text-field>
+                    </div>
+                  </template>
+                  <v-date-picker @input="showDatepickerNewCheque = false" no-title v-model="inputData"></v-date-picker>
+                </v-menu>
+
                 <p class="mb-0">Valor do pagamento</p>
                 <v-input hide-details>
                   <money
@@ -43,15 +71,15 @@
                 </v-input>
               </v-card-text>
               <v-card-actions class="justify-center">
-                <v-btn outlined color="primary" @click="dialogPagar = false">Cancelar</v-btn>
-                <v-btn color="primary">Salvar</v-btn>
+                <v-btn outlined color="primary" @click="dialogPagar = false" :disabled="loading">Cancelar</v-btn>
+                <v-btn color="primary" :disabled="loading" :loading="loading" @click="insertPayment">Salvar</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-toolbar-items>
       </v-toolbar>
       <div class="pa-3">
-        <v-card outlined class="mb-3">
+        <v-card outlined class="mb-3" :loading="loading">
           <v-card-text>
             <div class="d-flex justify-space-between align-center">
               <div>
@@ -61,13 +89,13 @@
                     class="form-control font-weight-bold w-100"
                     v-bind="{prefix: 'R$ ', precision: 2, thousands: '.', decimal: ',', masked: false}"
                     :disabled="loading"
-                    v-model="servico.valor"
+                    v-model="service.valor"
                   ></money>
                 </v-input>
               </div>
               <div class="font-weight-bold">
                 <p class="mb-0">Valor pago até o momento:</p>
-                <p class="mb-0">R$ 0,00</p>
+                <p class="mb-0">R$ {{service.pagamentos ? service.pagamentos.reduce((accumulator, currentValue) => accumulator + currentValue.valor, 0).toFixed(2).replace('.', ',') : '0,00'}}</p>
               </div>
             </div>
           </v-card-text>
@@ -75,12 +103,32 @@
         <v-card>
           <v-card-text>
             <v-data-table
-              :items="servico.pagamentos"
+              :items="service.pagamentos"
               :headers="headers"
               no-data-text="Nenhum pagamento registrado até agora"
               :items-per-page="999"
               hide-default-footer
+              :loading="loading"
             >
+              <template v-slot:item.tipo="{item}">
+                {{formasPagamento.find(x => x.value === item.tipo).text}}
+              </template>
+              <template v-slot:item.valor="{item}">
+                R$ {{item.valor.toFixed(2).replace('.', ',')}}
+              </template>
+              <template v-slot:item.data_pagamento="{item}">
+                {{ajustaData(item.data_pagamento)}}
+              </template>
+              <template v-slot:item.acoes="{item}">
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon color="error" @click="deletePayment(item)" :disabled="loading" v-on="on">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Remover</span>
+                </v-tooltip>
+              </template>
             </v-data-table>
           </v-card-text>
         </v-card>
@@ -90,21 +138,26 @@
 </template>
 
 <script>
-  //TODO -> Criar um $emit('updateServico') para forçar o componente Pai a atualizar a propriedade serviço? Senão, mudar o comportamento do componente para ID do serviço, carregando os dados via API.
+  import {DateHelper} from 'eliaslazcano-helpers'
   export default {
     name: "DialogPagamentos",
     props: {
-      servico: {required: true}, //Objeto fornecido pela API GET /servicos?id=x
-      value: {default: false}
+      servico: {required: true}, //Objeto fornecido pela API GET /servicos?id=x. Atualizado mediante this.$emit('update:servico', this.service)
+      value: {default: false}    //Booleano que exibe o modal
     },
     data: () => ({
+      service: {},
       showDialog: false,
       loading: false,
       headers: [
         {value: 'tipo', text: 'Forma de pagamento'},
         {value: 'valor', text: 'Valor'},
+        {value: 'data_pagamento', text: 'Data'},
+        {value: 'obs', text: 'Observação'},
         {value: 'acoes', text: 'Ações'}
       ],
+      //Dialog pagar
+      dialogPagar: false,
       formasPagamento: [
         {value: 0, text: 'Dinheiro'},
         {value: 1, text: 'Débito'},
@@ -113,19 +166,72 @@
         {value: 4, text: 'Cheque'},
         {value: 5, text: 'Outro'}
       ],
-      dialogPagar: false,
       inputFormaPagamento: null,
-      inputValor: 0
+      inputValor: 0,
+      inputParcelas: 2,
+      inputData: DateHelper.date_SQLagora(),
+      showDatepickerNewCheque: false
     }),
+    computed: {
+      inputDataBr() {return this.inputData ? DateHelper.date_SQLparaBR(this.inputData) : ''}
+    },
+    methods: {
+      ajustaData(date) {
+        return DateHelper.date_SQLparaBR(date);
+      },
+      async reloadPayments(preserveLoading = false) {
+        if (!preserveLoading) this.loading = true;
+        try {
+          const {data} = await this.$http.get(`/pagamentos?servico=${this.service.id}`);
+          this.service.pagamentos = data;
+          this.$emit('update:servico', this.service);
+        } finally {
+          if (!preserveLoading) this.loading = false;
+        }
+      },
+      async insertPayment() {
+        this.loading = true;
+        try {
+          await this.$http.post('/pagamentos', {
+            tipo: this.inputFormaPagamento,
+            valor: this.inputValor,
+            parcelas: this.inputFormaPagamento === 3 ? this.inputParcelas : null,
+            data_pagamento: this.inputData,
+            servico: this.service.id
+          });
+          await this.reloadPayments(true);
+          //TODO - LIMPAR INPUTS
+          this.dialogPagar = false;
+        } finally {
+          this.loading = false;
+        }
+      },
+      async deletePayment(payment) {
+        this.loading = true;
+        try {
+          await this.$http.delete(`/pagamentos?id=${payment.id}`);
+          await this.reloadPayments(true);
+        } finally {
+          this.loading = false;
+        }
+      }
+    },
     mounted() {
       this.showDialog = this.value;
     },
     watch: {
       showDialog(x) {
-        if (x !== this.value) this.$emit('input', x)
+        if (x !== this.value) {
+          if (x === false) this.$emit('update:servico', this.service);
+          this.$emit('input', x);
+        }
       },
       value(x) {
-        if (x !== this.showDialog) this.showDialog = x;
+        if (x !== this.showDialog) {
+          if (x === true) this.service = this.servico;
+          if (x === false) this.$emit('update:servico', this.service);
+          this.showDialog = x;
+        }
       }
     }
   }
