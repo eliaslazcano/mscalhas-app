@@ -30,6 +30,7 @@
               outlined
               class="mb-2"
               :disabled="loading"
+              @click="dialogPagamentos = true"
             >Ajustar pagamentos</v-btn>
           </div>
         </v-card>
@@ -194,12 +195,9 @@
         <p class="mb-1 mt-3">Valor do serviço</p>
         <v-input hide-details>
           <money
-            id="ipt-valor"
             class="form-control font-weight-bold w-100"
             v-model="servico.valor"
             v-bind="{prefix: 'R$ ', precision: 2, thousands: '.', decimal: ',', masked: false}"
-            @focusin.native="$refs.valor.isFocused = $refs.valor.hasColor = iptValorFocused = true"
-            @focusout.native="$refs.valor.isFocused = iptValorFocused = false"
             :disabled="loading"
           ></money>
         </v-input>
@@ -212,6 +210,8 @@
       </v-btn>
       <v-btn color="primary" outlined to="/servicos">{{id ? 'VOLTAR' : 'CANCELAR'}}</v-btn>
     </div>
+    <!-- Painel de pagamentos -->
+    <dialog-pagamentos v-if="id" v-model="dialogPagamentos" :servico="servico"></dialog-pagamentos>
     <!-- DEBUG -->
     <div class="pa-1 mb-1 ml-1" style="border: 1px solid black; position: fixed; left: 0; bottom: 0; background-color: rgba(255,255,255,.75); font-size: .6rem; z-index: 999">
       <pre>ID: {{id === null ? 'null' : id}}</pre>
@@ -225,15 +225,18 @@
 <script>
   //TODO - Tela de pagamentos.
   import {DateHelper} from 'eliaslazcano-helpers'
+  import DialogPagamentos from "../components/DialogPagamentos";
   export default {
     name: "Servico",
+    components: {DialogPagamentos},
     props: {
       id: {default: null}
     },
     data: () => ({
       loading: true,
       socios: [],
-      servico: {}
+      servico: {},
+      dialogPagamentos: false
     }),
     computed: {
       finalizado() {return this.servico ? (!!this.servico.data_finalizacao) : null}

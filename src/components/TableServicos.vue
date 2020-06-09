@@ -14,9 +14,10 @@
         no-data-text="Nenhum serviço encontrado"
         @click:row="abrirServico"
       >
+        <template v-slot:item.data_criacao="{item}">{{ajustaData(item.data_criacao)}}</template>
         <template v-slot:item.status="{item}">
-          <span v-if="item.data_finalizacao" class="green--text">FINALIZADO</span>
-          <span v-else class="amber--text">EM ANDAMENTO</span>
+          <v-chip color="success" v-if="item.data_finalizacao">FINALIZADO</v-chip>
+          <v-chip color="warning" v-else>EM ANDAMENTO</v-chip>
         </template>
         <template v-slot:item.valor="{item}">R$ {{item.valor.toFixed(2).replace('.', ',')}}</template>
       </v-data-table>
@@ -25,6 +26,7 @@
 </template>
 
 <script>
+  import {DateHelper} from 'eliaslazcano-helpers'
   export default {
     name: "TableServicos",
     data: () => ({
@@ -33,9 +35,10 @@
       headers: [
         {text: 'Cod.', value: 'id'},
         {text: 'Cliente', value: 'cliente_nome'},
+        {text: 'Data de criação', value: 'data_criacao'},
+        {text: 'Responsável', value: 'socio_responsavel_nome'},
         {text: 'Status', value: 'status'},
-        {text: 'Valor', value: 'valor'},
-        {text: 'Responsável', value: 'socio_responsavel_nome'}
+        {text: 'Valor', value: 'valor'}
       ]
     }),
     methods: {
@@ -48,7 +51,8 @@
           this.loading = false;
         }
       },
-      abrirServico(a) {this.$router.push('/servico/' + a.id)}
+      abrirServico(a) {this.$router.push('/servico/' + a.id)},
+      ajustaData(datetime) {return DateHelper.date_SQLparaBR(datetime)}
     },
     created() {
       this.loadData();
