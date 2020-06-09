@@ -26,6 +26,7 @@ label {
     background-color: #fff;
     border: 1px solid #e1e5eb;
     font-weight: 300;
+    min-height: 40px;
     max-height: none !important;
     will-change: border-color,box-shadow;
     border-radius: .25rem;
