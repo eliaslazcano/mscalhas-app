@@ -15,6 +15,12 @@
         "6": "Parcelado em Cheques",
         "7": "Outro"
       }
+    },
+    "Cheques": {
+      "TipoCheque": {
+        "0": "Depósito",
+        "1": "Saque"
+      }
     }
   }
 }

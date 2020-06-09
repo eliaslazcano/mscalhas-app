@@ -127,3 +127,177 @@ foreach ($servicos as $servico) {
   }
 }
 echo "Servicos inseridos.\n";
+
+//Registra o pagamento dos serviços
+echo "Inserindo pagamentos...\n";
+foreach ($servicos as $servico) {
+  $formaPagamento = intval($servico['FormaPagamento']);
+  $dataPagamento = substr($servico['DataPagamento'], 0, 4).'-'.substr($servico['DataPagamento'], 4, 2).'-'.substr($servico['DataPagamento'], 6, 2);
+
+  //Se for Dinheiro ou Débito...
+  if ($formaPagamento === 0 || $formaPagamento === 4) {
+    $pagtoTipo = $formaPagamento === 0 ? 0 : 1;
+    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (:tipo, :valor, :servico, :data_pagamento)");
+    $statement->bindValue(':tipo', $pagtoTipo, PDO::PARAM_INT);
+    $statement->bindValue(':valor', $servico['valor']);
+    $statement->bindValue(':servico', $servico['ServicoId']);
+    $statement->bindValue(':data_pagamento', $dataPagamento);
+    if (!$statement->execute()) {
+      truncateAll($db);
+      HttpHelper::erroJson(500, 'Falha na base de dados', 4, $statement->errorInfo());
+    }
+  }
+  //Se for Cheque...
+  elseif ($formaPagamento === 1) {
+    $statement = $pdo->query("SELECT * FROM Cheques WHERE ServicoId = ".$servico['ServicoId']);
+    $cheque = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$cheque) HttpHelper::erroJson(500, "Cheque não encontrado", 0, $servico['ServicoId']);
+
+    $query = "INSERT INTO cheques (id, cliente, banco, agencia, conta, tipo, numcheque, valor, data_cheque, data_compensado, servico) VALUES (:id, :cliente, :banco, :agencia, :conta, :tipo, :numcheque, :valor, :data_cheque, :data_compensado, :servico)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':id', $cheque['ChequeId']);
+    $statement->bindValue(':cliente', null); //O nome deve ser buscado no serviço, não daqui.
+    $statement->bindValue(':banco', $cheque['NomeBanco'] ? StringHelper::toUpperCase($cheque['NomeBanco']) : null);
+    $statement->bindValue(':agencia', $cheque['Agencia'] ? StringHelper::toUpperCase($cheque['Agencia']) : null);
+    $statement->bindValue(':conta', $cheque['Conta'] ? StringHelper::toUpperCase($cheque['Conta']) : null);
+    $statement->bindValue(':tipo', (intval($cheque['TipoCheque']) === 0) ? 1 : ((intval($cheque['TipoCheque']) === 1) ? 0 : null), PDO::PARAM_INT);
+    $statement->bindValue(':numcheque', $cheque['NumCheque'] ? StringHelper::toUpperCase($cheque['NumCheque']) : null);
+    $statement->bindValue(':valor', $cheque['ValorCheque'] ? $cheque['ValorCheque'] : '0');
+    $statement->bindValue(':data_cheque', substr($cheque['DataCheque'], 0, 4).'-'.substr($cheque['DataCheque'], 4, 2).'-'.substr($cheque['DataCheque'], 6, 2));
+    $statement->bindValue(':data_compensado', $cheque['DataCompensacao'] ? substr($cheque['DataCompensacao'], 0, 4).'-'.substr($cheque['DataCompensacao'], 4, 2).'-'.substr($cheque['DataCompensacao'], 6, 2) : null);
+    $statement->bindValue(':servico', $servico['ServicoId']);
+    if (!$statement->execute()) {
+      truncateAll($db);
+      HttpHelper::erroJson(500, 'Falha na base de dados', 5, $statement->errorInfo());
+    }
+
+    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (4, :valor, :servico, null)");
+    $statement->bindValue(':valor', $cheque['ValorCheque'] ? $cheque['ValorCheque'] : '0');
+    $statement->bindValue(':servico', $servico['ServicoId']);
+    if (!$statement->execute()) {
+      truncateAll($db);
+      HttpHelper::erroJson(500, 'Falha na base de dados', 6, $statement->errorInfo());
+    }
+  }
+  //Se for Dinheiro + Cheque
+  elseif ($formaPagamento === 2) {
+    //o valor em dinheiro fica no cadastro do servico, o valor em cheque fica na tabela do cheque.
+
+    //Adiciona o pagamento em dinheiro
+    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (0, :valor, :servico, :data_pagamento)");
+    $statement->bindValue(':valor', $servico['valor']);
+    $statement->bindValue(':servico', $servico['ServicoId']);
+    $statement->bindValue(':data_pagamento', $dataPagamento);
+    if (!$statement->execute()) {
+      truncateAll($db);
+      HttpHelper::erroJson(500, 'Falha na base de dados', 4, $statement->errorInfo());
+    }
+
+    //Adiciona o pagamento em cheque
+    $statement = $pdo->query("SELECT * FROM Cheques WHERE ServicoId = ".$servico['ServicoId']);
+    $cheque = $statement->fetch(PDO::FETCH_ASSOC);
+    if (!$cheque) HttpHelper::erroJson(500, "Cheque não encontrado", 0, $servico['ServicoId']);
+    $query = "INSERT INTO cheques (id, cliente, banco, agencia, conta, tipo, numcheque, valor, data_cheque, data_compensado, servico) VALUES (:id, :cliente, :banco, :agencia, :conta, :tipo, :numcheque, :valor, :data_cheque, :data_compensado, :servico)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':id', $cheque['ChequeId']);
+    $statement->bindValue(':cliente', null); //O nome deve ser buscado do serviço, não daqui.
+    $statement->bindValue(':banco', $cheque['NomeBanco'] ? StringHelper::toUpperCase($cheque['NomeBanco']) : null);
+    $statement->bindValue(':agencia', $cheque['Agencia'] ? StringHelper::toUpperCase($cheque['Agencia']) : null);
+    $statement->bindValue(':conta', $cheque['Conta'] ? StringHelper::toUpperCase($cheque['Conta']) : null);
+    $statement->bindValue(':tipo', (intval($cheque['TipoCheque']) === 0) ? 1 : ((intval($cheque['TipoCheque']) === 1) ? 0 : null), PDO::PARAM_INT);
+    $statement->bindValue(':numcheque', $cheque['NumCheque'] ? StringHelper::toUpperCase($cheque['NumCheque']) : null);
+    $statement->bindValue(':valor', $cheque['ValorCheque'] ? $cheque['ValorCheque'] : '0');
+    $statement->bindValue(':data_cheque', substr($cheque['DataCheque'], 0, 4).'-'.substr($cheque['DataCheque'], 4, 2).'-'.substr($cheque['DataCheque'], 6, 2));
+    $statement->bindValue(':data_compensado', $cheque['DataCompensacao'] ? substr($cheque['DataCompensacao'], 0, 4).'-'.substr($cheque['DataCompensacao'], 4, 2).'-'.substr($cheque['DataCompensacao'], 6, 2) : null);
+    $statement->bindValue(':servico', $servico['ServicoId']);
+    if (!$statement->execute()) {
+      truncateAll($db);
+      HttpHelper::erroJson(500, 'Falha na base de dados', 5, $statement->errorInfo());
+    }
+    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (4, :valor, :servico, null)");
+    $statement->bindValue(':valor', $cheque['ValorCheque'] ? $cheque['ValorCheque'] : '0');
+    $statement->bindValue(':servico', $servico['ServicoId']);
+    if (!$statement->execute()) {
+      truncateAll($db);
+      HttpHelper::erroJson(500, 'Falha na base de dados', 6, $statement->errorInfo());
+    }
+  }
+  //Se for Crédito
+  elseif ($formaPagamento === 3) {
+    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (2, :valor, :servico, :data_pagamento)");
+    $statement->bindValue(':valor', $servico['valor']);
+    $statement->bindValue(':servico', $servico['ServicoId']);
+    $statement->bindValue(':data_pagamento', $dataPagamento);
+    if (!$statement->execute()) {
+      truncateAll($db);
+      HttpHelper::erroJson(500, 'Falha na base de dados', 4, $statement->errorInfo());
+    }
+  }
+  //Se for multiplos cheques
+  elseif ($formaPagamento === 6) {
+    $statement = $pdo->query("SELECT * FROM Cheques WHERE ServicoId = ".$servico['ServicoId']);
+    $cheques = $statement->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($cheques as $cheque) {
+      $query = "INSERT INTO cheques (id, cliente, banco, agencia, conta, tipo, numcheque, valor, data_cheque, data_compensado, servico) VALUES (:id, :cliente, :banco, :agencia, :conta, :tipo, :numcheque, :valor, :data_cheque, :data_compensado, :servico)";
+      $statement = $db->prepare($query);
+      $statement->bindValue(':id', $cheque['ChequeId']);
+      $statement->bindValue(':cliente', null); //O nome deve ser buscado no serviço, não daqui.
+      $statement->bindValue(':banco', $cheque['NomeBanco'] ? StringHelper::toUpperCase($cheque['NomeBanco']) : null);
+      $statement->bindValue(':agencia', $cheque['Agencia'] ? StringHelper::toUpperCase($cheque['Agencia']) : null);
+      $statement->bindValue(':conta', $cheque['Conta'] ? StringHelper::toUpperCase($cheque['Conta']) : null);
+      $statement->bindValue(':tipo', (intval($cheque['TipoCheque']) === 0) ? 1 : ((intval($cheque['TipoCheque']) === 1) ? 0 : null), PDO::PARAM_INT);
+      $statement->bindValue(':numcheque', $cheque['NumCheque'] ? StringHelper::toUpperCase($cheque['NumCheque']) : null);
+      $statement->bindValue(':valor', $cheque['ValorCheque'] ? $cheque['ValorCheque'] : '0');
+      $statement->bindValue(':data_cheque', substr($cheque['DataCheque'], 0, 4).'-'.substr($cheque['DataCheque'], 4, 2).'-'.substr($cheque['DataCheque'], 6, 2));
+      $statement->bindValue(':data_compensado', $cheque['DataCompensacao'] ? substr($cheque['DataCompensacao'], 0, 4).'-'.substr($cheque['DataCompensacao'], 4, 2).'-'.substr($cheque['DataCompensacao'], 6, 2) : null);
+      $statement->bindValue(':servico', $servico['ServicoId']);
+      if (!$statement->execute()) {
+        truncateAll($db);
+        HttpHelper::erroJson(500, 'Falha na base de dados', 9, $statement->errorInfo());
+      }
+
+      $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (4, :valor, :servico, null)");
+      $statement->bindValue(':valor', $cheque['ValorCheque'] ? $cheque['ValorCheque'] : '0');
+      $statement->bindValue(':servico', $servico['ServicoId']);
+      if (!$statement->execute()) {
+        truncateAll($db);
+        HttpHelper::erroJson(500, 'Falha na base de dados', 10, $statement->errorInfo());
+      }
+    }
+  }
+  //Se for outros
+  elseif ($formaPagamento === 7) {
+    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (5, :valor, :servico, :data_pagamento)");
+    $statement->bindValue(':valor', $servico['valor']);
+    $statement->bindValue(':servico', $servico['ServicoId']);
+    $statement->bindValue(':data_pagamento', $dataPagamento);
+    if (!$statement->execute()) {
+      truncateAll($db);
+      HttpHelper::erroJson(500, 'Falha na base de dados', 4, $statement->errorInfo());
+    }
+  }
+}
+
+//Registra os cheques standalone
+echo "Inserindo cheques avulsos...\n";
+$statement = $pdo->query("SELECT * FROM Cheques WHERE ServicoId IS NULL");
+$cheques = $statement->fetchAll(PDO::FETCH_ASSOC);
+foreach ($cheques as $cheque) {
+  $query = "INSERT INTO cheques (id, cliente, banco, agencia, conta, tipo, numcheque, valor, data_cheque, data_compensado, servico) VALUES (:id, :cliente, :banco, :agencia, :conta, :tipo, :numcheque, :valor, :data_cheque, :data_compensado, :servico)";
+  $statement = $db->prepare($query);
+  $statement->bindValue(':id', $cheque['ChequeId']);
+  $statement->bindValue(':cliente', StringHelper::toUpperCase($cheque['NomeCliente'])); //O nome deve ser buscado no serviço, não daqui.
+  $statement->bindValue(':banco', $cheque['NomeBanco'] ? StringHelper::toUpperCase($cheque['NomeBanco']) : null);
+  $statement->bindValue(':agencia', $cheque['Agencia'] ? StringHelper::toUpperCase($cheque['Agencia']) : null);
+  $statement->bindValue(':conta', $cheque['Conta'] ? StringHelper::toUpperCase($cheque['Conta']) : null);
+  $statement->bindValue(':tipo', (intval($cheque['TipoCheque']) === 0) ? 1 : ((intval($cheque['TipoCheque']) === 1) ? 0 : null), PDO::PARAM_INT);
+  $statement->bindValue(':numcheque', $cheque['NumCheque'] ? StringHelper::toUpperCase($cheque['NumCheque']) : null);
+  $statement->bindValue(':valor', $cheque['ValorCheque'] ? $cheque['ValorCheque'] : '0');
+  $statement->bindValue(':data_cheque', substr($cheque['DataCheque'], 0, 4).'-'.substr($cheque['DataCheque'], 4, 2).'-'.substr($cheque['DataCheque'], 6, 2));
+  $statement->bindValue(':data_compensado', $cheque['DataCompensacao'] ? substr($cheque['DataCompensacao'], 0, 4).'-'.substr($cheque['DataCompensacao'], 4, 2).'-'.substr($cheque['DataCompensacao'], 6, 2) : null);
+  $statement->bindValue(':servico', null);
+  if (!$statement->execute()) {
+    truncateAll($db);
+    HttpHelper::erroJson(500, 'Falha na base de dados', 12, $statement->errorInfo());
+  }
+}
