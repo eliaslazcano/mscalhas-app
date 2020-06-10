@@ -22,53 +22,61 @@
             <v-card>
               <v-card-title>Registrar pagamento</v-card-title>
               <v-card-text>
-                <p class="mb-0">Forma de pagamento</p>
-                <v-select
-                  label="Forma de pagamento"
-                  :items="formasPagamento"
-                  placeholder="clique para escolher"
-                  v-model="inputFormaPagamento"
-                  solo
-                  dense
-                ></v-select>
-
-                <v-menu
-                  v-model="showDatepickerNewCheque"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  top
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <div>
-                      <p class="mb-0">Data do recebimento</p>
-                      <v-text-field
-                        label="Data do recebimento"
-                        prepend-inner-icon="mdi-calendar"
-                        readonly
-                        v-on="on"
-                        persistent-hint
-                        v-model="inputDataBr"
+                <v-form ref="form-addpayment">
+                  <!-- Forma de pagamento -->
+                  <div>
+                    <p class="mb-0">Forma de pagamento</p>
+                    <v-select
+                      label="Forma de pagamento"
+                      :items="formasPagamento"
+                      placeholder="clique para escolher"
+                      :rules="[v => !!v || 'Selecione a forma de pagamento']"
+                      v-model="inputFormaPagamento"
+                      solo
+                      dense
+                    ></v-select>
+                  </div>
+                  <!-- Data do pagamento -->
+                  <v-menu
+                    v-model="showDatepickerNewCheque"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    top
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <div>
+                        <p class="mb-0">Data do recebimento</p>
+                        <v-text-field
+                          label="Data do recebimento"
+                          prepend-inner-icon="mdi-calendar"
+                          readonly
+                          v-on="on"
+                          persistent-hint
+                          v-model="inputDataBr"
+                          :disabled="loading"
+                          solo
+                          dense
+                        ></v-text-field>
+                      </div>
+                    </template>
+                    <v-date-picker @input="showDatepickerNewCheque = false" no-title v-model="inputData"></v-date-picker>
+                  </v-menu>
+                  <!-- Valor -->
+                  <div>
+                    <p class="mb-0">Valor do pagamento</p>
+                    <v-input hide-details v-model="inputValor" :rules="[v => !!v || 'Digite o valor']">
+                      <money
+                        class="form-control font-weight-bold w-100"
+                        v-bind="{prefix: 'R$ ', precision: 2, thousands: '.', decimal: ',', masked: false}"
                         :disabled="loading"
-                        solo
-                        dense
-                      ></v-text-field>
-                    </div>
-                  </template>
-                  <v-date-picker @input="showDatepickerNewCheque = false" no-title v-model="inputData"></v-date-picker>
-                </v-menu>
-
-                <p class="mb-0">Valor do pagamento</p>
-                <v-input hide-details>
-                  <money
-                    class="form-control font-weight-bold w-100"
-                    v-bind="{prefix: 'R$ ', precision: 2, thousands: '.', decimal: ',', masked: false}"
-                    :disabled="loading"
-                    v-model="inputValor"
-                  ></money>
-                </v-input>
+                        v-model="inputValor"
+                      ></money>
+                    </v-input>
+                  </div>
+                </v-form>
               </v-card-text>
               <v-card-actions class="justify-center">
                 <v-btn outlined color="primary" @click="dialogPagar = false" :disabled="loading">Cancelar</v-btn>
@@ -179,6 +187,12 @@
       ajustaData(date) {
         return DateHelper.date_SQLparaBR(date);
       },
+      limparCampos() {
+        this.inputFormaPagamento = null;
+        this.inputValor = 0;
+        this.inputParcelas = 2;
+        this.inputData = DateHelper.date_SQLagora();
+      },
       async reloadPayments(preserveLoading = false) {
         if (!preserveLoading) this.loading = true;
         try {
@@ -190,6 +204,7 @@
         }
       },
       async insertPayment() {
+        //TODO - Validar o $ref['form-addpayment'] antes de enviar os dados de pagamento
         this.loading = true;
         try {
           await this.$http.post('/pagamentos', {
@@ -200,8 +215,8 @@
             servico: this.service.id
           });
           await this.reloadPayments(true);
-          //TODO - LIMPAR INPUTS
           this.dialogPagar = false;
+          this.limparCampos();
         } finally {
           this.loading = false;
         }
