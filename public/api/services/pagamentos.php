@@ -16,12 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
   $servico = HttpHelper::validarParametro('servico');
   $db      = new DbMscalhas();
-  $query   = "SELECT id, tipo, valor, parcelas, cheque, data_registro, data_pagamento FROM pagamentos WHERE servico = :servico";
+  $query   = "SELECT p.id, p.tipo, IF(p.cheque IS NULL, p.valor, c.valor) AS valor, p.parcelas, p.cheque, p.data_registro, p.data_pagamento FROM pagamentos p LEFT JOIN cheques c ON p.cheque = c.id WHERE p.servico = :servico";
   $statement = $db->prepare($query);
   $statement->bindValue(':servico', $servico);
   if (!$statement->execute()) HttpHelper::erroJson(500, "Falha na base de dados", 0, $statement->errorInfo());
   $pagamentos = $statement->fetchAll(PDO::FETCH_ASSOC);
-  $pagamentos = $db->serializeNumericColumns($pagamentos, array('id', 'tipo', 'valor', 'servico', 'cheque'));
+  $pagamentos = $db->serializeNumericColumns($pagamentos, array('id', 'tipo', 'valor', 'parcelas', 'cheque'));
   HttpHelper::emitirJson($pagamentos);
 }
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
