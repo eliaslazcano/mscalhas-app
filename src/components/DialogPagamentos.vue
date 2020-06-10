@@ -122,7 +122,7 @@
                 {{formasPagamento.find(x => x.value === item.tipo).text}}
               </template>
               <template v-slot:item.valor="{item}">
-                R$ {{item.valor.toFixed(2).replace('.', ',')}}
+                R$ {{item.valor ? item.valor.toFixed(2).replace('.', ',') : 'ZERO'}}
               </template>
               <template v-slot:item.data_pagamento="{item}">
                 {{ajustaData(item.data_pagamento)}}

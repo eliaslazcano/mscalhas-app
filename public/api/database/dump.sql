@@ -59,18 +59,18 @@ create table pagamentos
 (
     id             int auto_increment
         primary key,
-    tipo           int            not null comment '0=Dinheiro;
+    tipo           int                         not null comment '0=Dinheiro;
 1=Débito;
 2=Crédito;
 3=Crédito-parcelado;
 4=Cheque;
 5=Outro;',
-    valor          decimal(13, 2) not null,
-    parcelas       int            null,
-    servico        int            null,
-    cheque         int            null comment 'Somente transações em cheque (tipo 3). Vincula a tabela de cheques.',
-    data_registro  datetime       null,
-    data_pagamento date           null,
+    valor          decimal(13, 2) default 0.00 null comment 'Para cheques o valor deve ser buscado na tabela "cheques"',
+    parcelas       int                         null,
+    servico        int                         null,
+    cheque         int                         null comment 'Somente transações em cheque (tipo 3). Vincula a tabela de cheques.',
+    data_registro  datetime                    null,
+    data_pagamento date                        null,
     constraint pagamentos_cheques_id_fk
         foreign key (cheque) references cheques (id)
             on update cascade on delete cascade,
