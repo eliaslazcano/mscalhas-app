@@ -204,7 +204,7 @@
         }
       },
       async insertPayment() {
-        //TODO - Validar o $ref['form-addpayment'] antes de enviar os dados de pagamento
+        if (!this.$refs['form-addpayment'].validate()) return;
         this.loading = true;
         try {
           await this.$http.post('/pagamentos', {

@@ -137,6 +137,14 @@
               </template>
               <span>Marcar como compensado</span>
             </v-tooltip>
+            <v-tooltip top v-if="item.servico">
+              <template v-slot:activator="{ on }">
+                <v-btn icon color="primary" :disabled="loading" :to="'/servico/' + item.servico" v-on="on">
+                  <v-icon>mdi-tools</v-icon>
+                </v-btn>
+              </template>
+              <span>Visualizar serviço</span>
+            </v-tooltip>
           </div>
         </template>
       </v-data-table>

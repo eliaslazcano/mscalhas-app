@@ -14,7 +14,7 @@ AuthHelper::sessionValidate();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
-  $cheques = DbMscalhas::fastQuery("SELECT id, numcheque, cliente, banco, agencia, conta, servico, tipo, valor, data_cheque, data_compensado, IF(data_compensado IS NULL, DATEDIFF(data_cheque, CURRENT_DATE), null) AS dias_restantes FROM cheques ORDER BY id DESC", array('id', 'servico', 'tipo', 'valor', 'dias_restantes'));
+  $cheques = DbMscalhas::fastQuery("SELECT c.id, c.numcheque, IF(c.servico IS NULL, c.cliente, s.cliente_nome) AS cliente, c.banco, c.agencia, c.conta, c.servico, c.tipo, c.valor, c.data_cheque, c.data_compensado, IF(c.data_compensado IS NULL, DATEDIFF(c.data_cheque, CURRENT_DATE), null) AS dias_restantes FROM cheques c LEFT JOIN servicos s ON c.servico = s.id ORDER BY id DESC", array('id', 'servico', 'tipo', 'valor', 'dias_restantes'));
   HttpHelper::emitirJson($cheques);
 }
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST')

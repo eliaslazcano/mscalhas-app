@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
   $id = HttpHelper::obterParametro('id');
   if (!$id) {
-    $servicos = DbMscalhas::fastQuery("SELECT s.id, s.socio_responsavel, so.nome socio_responsavel_nome, s.valor, s.cliente_nome, s.data_criacao, s.data_finalizacao FROM servicos s LEFT JOIN socios so ON s.socio_responsavel = so.id ORDER BY s.id DESC", array('id', 'socio_responsavel_id', 'valor'));
+    $servicos = DbMscalhas::fastQuery("SELECT s.id, s.socio_responsavel, so.nome socio_responsavel_nome, s.valor, s.cliente_nome, s.data_criacao, s.data_finalizacao FROM servicos s LEFT JOIN socios so ON s.socio_responsavel = so.id ORDER BY s.id DESC", array('id', 'socio_responsavel', 'valor'));
     HttpHelper::emitirJson($servicos);
   } else {
     $query = "SELECT s.*, x.nome socio_responsavel_nome FROM servicos s LEFT JOIN socios x ON s.socio_responsavel = x.id WHERE s.id = :id";
