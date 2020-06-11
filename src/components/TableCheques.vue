@@ -106,13 +106,14 @@
         :loading="loading"
         no-data-text="Nenhum cheque encontrado"
         :custom-sort="customSort"
-        dense
       >
         <template v-slot:item.tipo="{item}">
-          <span v-if="item.tipo === 0" class="green--text">Saque em dinheiro</span>
-          <span v-else-if="item.tipo === 1" class="blue--text">Deposito em conta</span>
+          <span v-if="item.tipo === 0" class="green--text">Saque</span> <!-- em dinheiro -->
+          <span v-else-if="item.tipo === 1" class="blue--text">Deposito</span> <!-- em conta -->
         </template>
-        <template v-slot:item.valor="{item}">R$ {{item.valor.toFixed(2).replace('.', ',')}}</template>
+        <template v-slot:item.valor="{item}">
+          <span class="text-no-wrap">R$ {{item.valor.toFixed(2).replace('.', ',')}}</span>
+        </template>
         <template v-slot:item.data_cheque="{item}">{{corrigeData(item.data_cheque)}}</template>
         <template v-slot:item.dias_restantes="{item}">
           <v-chip v-if="item.dias_restantes === null" color="success" small class="my-1">Compensado {{item.data_compensado === hoje ? 'hoje' : 'em ' + corrigeData(item.data_compensado)}}</v-chip>

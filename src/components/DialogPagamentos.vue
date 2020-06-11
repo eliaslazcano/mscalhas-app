@@ -30,7 +30,7 @@
                       label="Forma de pagamento"
                       :items="formasPagamento"
                       placeholder="clique para escolher"
-                      :rules="[v => !!v || 'Selecione a forma de pagamento']"
+                      :rules="[v => (v !== false && v !== null) || 'Selecione a forma de pagamento']"
                       v-model="inputFormaPagamento"
                       solo
                       dense
@@ -67,7 +67,7 @@
                   <!-- Valor -->
                   <div>
                     <p class="mb-0">Valor do pagamento</p>
-                    <v-input hide-details v-model="inputValor" :rules="[v => !!v || 'Digite o valor']">
+                    <v-input v-model="inputValor" :rules="[v => !!v || 'Digite o valor']">
                       <money
                         class="form-control font-weight-bold w-100"
                         v-bind="{prefix: 'R$ ', precision: 2, thousands: '.', decimal: ',', masked: false}"
@@ -146,6 +146,7 @@
 </template>
 
 <script>
+  //TODO - FALTA O INPUT PARA INSERIR O NUMERO DE PARCELAS
   import {DateHelper} from 'eliaslazcano-helpers'
   export default {
     name: "DialogPagamentos",
