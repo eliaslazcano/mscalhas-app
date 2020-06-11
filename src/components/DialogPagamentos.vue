@@ -64,10 +64,23 @@
                     </template>
                     <v-date-picker @input="showDatepickerNewCheque = false" no-title v-model="inputData"></v-date-picker>
                   </v-menu>
+                  <!-- Parcelas -->
+                  <div v-if="inputFormaPagamento === 3">
+                    <p class="mb-0">Nº de parcelas</p>
+                    <v-text-field
+                      label="Nº de parcelas"
+                      v-model.number="inputParcelas"
+                      solo
+                      v-money="{prefix: '', precision: 0, thousands: ''}"
+                      :rules="[v => !!v || 'Digite a quantidade de parcelas']"
+                    ></v-text-field>
+                  </div>
                   <!-- Valor -->
                   <div>
                     <p class="mb-0">Valor do pagamento</p>
-                    <v-input v-model="inputValor" :rules="[v => !!v || 'Digite o valor']">
+                    <v-input
+                      v-model="inputValor"
+                      :rules="[v => !!v || 'Digite o valor']">
                       <money
                         class="form-control font-weight-bold w-100"
                         v-bind="{prefix: 'R$ ', precision: 2, thousands: '.', decimal: ',', masked: false}"
@@ -122,10 +135,13 @@
                 {{formasPagamento.find(x => x.value === item.tipo).text}}
               </template>
               <template v-slot:item.valor="{item}">
-                R$ {{item.valor ? item.valor.toFixed(2).replace('.', ',') : 'ZERO'}}
+                R$ {{item.valor ? item.valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 'ZERO'}}
               </template>
               <template v-slot:item.data_pagamento="{item}">
                 {{ajustaData(item.data_pagamento)}}
+              </template>
+              <template v-slot:item.obs="{item}">
+                <span v-if="item.tipo === 3">Parcelado em {{item.parcelas}}x</span>
               </template>
               <template v-slot:item.acoes="{item}">
                 <v-tooltip top>
@@ -146,7 +162,6 @@
 </template>
 
 <script>
-  //TODO - FALTA O INPUT PARA INSERIR O NUMERO DE PARCELAS
   import {DateHelper} from 'eliaslazcano-helpers'
   export default {
     name: "DialogPagamentos",
@@ -205,7 +220,17 @@
         }
       },
       async insertPayment() {
+        //Valições
         if (!this.$refs['form-addpayment'].validate()) return;
+        if (this.inputFormaPagamento === 3 && !this.inputParcelas) {
+          this.$store.commit('snackbar', {text: 'Digite a quantidade de parcelas', color: 'error'})
+          return;
+        }
+        if (!this.inputValor) {
+          this.$store.commit('snackbar', {text: 'Digite o valor', color: 'error'})
+          return;
+        }
+
         this.loading = true;
         try {
           await this.$http.post('/pagamentos', {
@@ -252,7 +277,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>

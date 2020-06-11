@@ -19,7 +19,7 @@
           <v-chip color="success" v-if="item.data_finalizacao">FINALIZADO</v-chip>
           <v-chip color="warning" v-else>EM ANDAMENTO</v-chip>
         </template>
-        <template v-slot:item.valor="{item}">R$ {{item.valor.toFixed(2).replace('.', ',')}}</template>
+        <template v-slot:item.valor="{item}">R$ {{item.valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".")}}</template>
       </v-data-table>
     </v-card-text>
   </v-card>
