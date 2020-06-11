@@ -107,6 +107,12 @@
         no-data-text="Nenhum cheque encontrado"
         :custom-sort="customSort"
       >
+        <template v-slot:loading>
+          <v-skeleton-loader
+            class="mt-1"
+            type="table-tbody"
+          ></v-skeleton-loader>
+        </template>
         <template v-slot:item.tipo="{item}">
           <span v-if="item.tipo === 0" class="green--text">Saque</span> <!-- em dinheiro -->
           <span v-else-if="item.tipo === 1" class="blue--text">Deposito</span> <!-- em conta -->

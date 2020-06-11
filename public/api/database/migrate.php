@@ -171,8 +171,9 @@ foreach ($servicos as $servico) {
       HttpHelper::erroJson(500, 'Falha na base de dados', 5, $statement->errorInfo());
     }
 
-    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (4, null, :servico, null)"); //Para cheques, o valor deve ser buscado na tabela "cheques"
+    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento, cheque) VALUES (4, null, :servico, null, :cheque)"); //Para cheques, o valor deve ser buscado na tabela "cheques"
     $statement->bindValue(':servico', $servico['ServicoId']);
+    $statement->bindValue(':cheque', $cheque['ChequeId']);
     if (!$statement->execute()) {
       truncateAll($db);
       HttpHelper::erroJson(500, 'Falha na base de dados', 6, $statement->errorInfo());
@@ -213,8 +214,9 @@ foreach ($servicos as $servico) {
       truncateAll($db);
       HttpHelper::erroJson(500, 'Falha na base de dados', 5, $statement->errorInfo());
     }
-    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (4, null, :servico, null)"); //Para cheques, o valor deve ser buscado na tabela "cheques"
+    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento, cheque) VALUES (4, null, :servico, null, :cheque)"); //Para cheques, o valor deve ser buscado na tabela "cheques"
     $statement->bindValue(':servico', $servico['ServicoId']);
+    $statement->bindValue(':cheque', $cheque['ChequeId']);
     if (!$statement->execute()) {
       truncateAll($db);
       HttpHelper::erroJson(500, 'Falha na base de dados', 6, $statement->errorInfo());
@@ -254,8 +256,9 @@ foreach ($servicos as $servico) {
         HttpHelper::erroJson(500, 'Falha na base de dados', 9, $statement->errorInfo());
       }
 
-      $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (4, null, :servico, null)"); //Para cheques, o valor deve ser buscado na tabela "cheques"
+      $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento, cheque) VALUES (4, null, :servico, null, :cheque)"); //Para cheques, o valor deve ser buscado na tabela "cheques"
       $statement->bindValue(':servico', $servico['ServicoId']);
+      $statement->bindValue(':cheque', $cheque['ChequeId']);
       if (!$statement->execute()) {
         truncateAll($db);
         HttpHelper::erroJson(500, 'Falha na base de dados', 10, $statement->errorInfo());

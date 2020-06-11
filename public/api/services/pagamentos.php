@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
   $servico = HttpHelper::validarParametro('servico');
   $db      = new DbMscalhas();
-  $query   = "SELECT p.id, p.tipo, IF(p.cheque IS NULL, p.valor, c.valor) AS valor, p.parcelas, p.cheque, p.data_registro, p.data_pagamento FROM pagamentos p LEFT JOIN cheques c ON p.cheque = c.id WHERE p.servico = :servico";
+  $query   = "SELECT p.id, p.tipo, IF(p.cheque IS NULL, p.valor, c.valor) AS valor, p.parcelas, p.cheque, p.data_registro, IF(p.cheque IS NULL, p.data_pagamento, c.data_cheque) data_pagamento, IF(p.cheque IS NULL, NULL, c.data_compensado) AS data_compensado FROM pagamentos p LEFT JOIN cheques c ON p.cheque = c.id WHERE p.servico = :servico";
   $statement = $db->prepare($query);
   $statement->bindValue(':servico', $servico);
   if (!$statement->execute()) HttpHelper::erroJson(500, "Falha na base de dados", 0, $statement->errorInfo());

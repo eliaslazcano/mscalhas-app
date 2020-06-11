@@ -14,6 +14,12 @@
         no-data-text="Nenhum serviço encontrado"
         @click:row="abrirServico"
       >
+        <template v-slot:loading>
+          <v-skeleton-loader
+            class="mt-1"
+            type="table-row-divider@10"
+          ></v-skeleton-loader>
+        </template>
         <template v-slot:item.data_criacao="{item}">{{ajustaData(item.data_criacao)}}</template>
         <template v-slot:item.status="{item}">
           <v-chip color="success" v-if="item.data_finalizacao">FINALIZADO</v-chip>

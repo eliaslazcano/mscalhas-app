@@ -5,10 +5,16 @@
         <!-- Status e Pagamento -->
         <v-row v-if="id">
           <v-col cols="12" sm="6" class="pt-0">
+            <v-skeleton-loader
+              v-if="showSkeleton"
+              type="image"
+              :height="heightStatusCards"
+            ></v-skeleton-loader>
             <v-card
+              v-else
               :color="finalizado ? 'success' : 'amber'"
               dark
-              height="9.2rem"
+              :height="heightStatusCards"
               class="d-flex flex-column"
               :loading="loading"
             >
@@ -28,10 +34,16 @@
             </v-card>
           </v-col>
           <v-col cols="12" sm="6" class="pt-0">
+            <v-skeleton-loader
+              v-if="showSkeleton"
+              type="image"
+              :height="heightStatusCards"
+            ></v-skeleton-loader>
             <v-card
+              v-else
               :color="valorPago === 0 ? 'red' : (valorPago >= servico.valor ? 'success' : 'amber')"
               dark
-              height="9.2rem"
+              :height="heightStatusCards"
               class="d-flex flex-column"
               :loading="loading"
             >
@@ -266,11 +278,13 @@
       loading: true,
       socios: [],
       servico: {},
-      dialogPagamentos: false
+      dialogPagamentos: false,
+      heightStatusCards: '9.2rem'
     }),
     computed: {
       finalizado() {return this.servico ? (!!this.servico.data_finalizacao) : null},
-      valorPago() {return this.servico && this.servico.pagamentos ? this.servico.pagamentos.reduce((accumulator, currentValue) => accumulator + currentValue.valor, 0) : 0}
+      valorPago() {return this.servico && this.servico.pagamentos ? this.servico.pagamentos.reduce((accumulator, currentValue) => accumulator + currentValue.valor, 0) : 0},
+      showSkeleton() {return !this.servico.id}
     },
     methods: {
       async loadData() {
