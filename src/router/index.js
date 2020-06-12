@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Page404 from '../views/404.vue'
 import store from '../store'
 
 Vue.use(VueRouter);
@@ -10,6 +11,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '*',
+    name: '404',
+    component: Page404
   },
   {
     path: '/login',
@@ -39,6 +45,11 @@ const routes = [
     path: '/cheques',
     name: 'Cheques',
     component: () => import('../views/Cheques.vue')
+  },
+  {
+    path: '/relatorios',
+    name: 'Relatorios',
+    component: () => import('../views/Relatorios.vue')
   }
 ];
 

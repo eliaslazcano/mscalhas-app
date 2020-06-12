@@ -47,6 +47,14 @@
             <v-list-item-title>Cheques</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item link to="/relatorios">
+          <v-list-item-action>
+            <v-icon>mdi-finance</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Relatórios</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item link to="/config">
           <v-list-item-action>
             <v-icon>mdi-cog</v-icon>
@@ -59,7 +67,7 @@
       <!-- Rodapé do menu -->
       <template v-slot:append>
         <div class="px-2 pb-3">
-          <v-btn color="primary" class="white--text" large block v-if="!$vuetify.breakpoint.lgAndUp" @click="() => {showMenu = false; $store.dispatch('signout')}">SAIR</v-btn>
+          <v-btn color="primary" class="white--text" large block @click="() => {showMenu = false; $store.dispatch('signout')}">SAIR</v-btn>
         </div>
       </template>
     </v-navigation-drawer>
