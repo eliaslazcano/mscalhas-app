@@ -13,7 +13,17 @@
         sort-desc
         no-data-text="Nenhum serviço encontrado"
         @click:row="abrirServico"
+        :search="search"
       >
+        <template v-slot:top>
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            label="Pesquisar"
+            single-line
+            hide-details
+          ></v-text-field>
+        </template>
         <template v-slot:loading>
           <v-skeleton-loader
             class="mt-1"
@@ -45,7 +55,8 @@
         {text: 'Responsável', value: 'socio_responsavel_nome'},
         {text: 'Status', value: 'status'},
         {text: 'Valor', value: 'valor'}
-      ]
+      ],
+      search: ''
     }),
     methods: {
       async loadData() {

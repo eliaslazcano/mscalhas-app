@@ -106,7 +106,17 @@
         :loading="loading"
         no-data-text="Nenhum cheque encontrado"
         :custom-sort="customSort"
+        :search="search"
       >
+        <template v-slot:top>
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            label="Pesquisar"
+            single-line
+            hide-details
+          ></v-text-field>
+        </template>
         <template v-slot:loading>
           <v-skeleton-loader
             class="mt-1"
@@ -198,6 +208,7 @@
         {text: 'Status', value: 'dias_restantes', align: 'center', sortable: false},
         {text: 'Ações', value: 'actions', sortable: false}
       ],
+      search: '',
       dialogAdd: false,
       dialogCompensarShow: false,
       dialogCompensarCheque: null,

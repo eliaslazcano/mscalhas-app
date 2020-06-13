@@ -141,10 +141,10 @@
                 {{ajustaData(item.data_pagamento)}}
               </template>
               <template v-slot:item.obs="{item}">
-                <v-chip v-if="item.tipo === 3" small color="primary">{{item.parcelas}}x</v-chip>
+                <v-chip v-if="item.tipo === 3" color="primary">{{item.parcelas}} parcelas</v-chip>
                 <span v-else-if="item.tipo === 4">
-                  <v-chip small color="success" v-if="item.data_compensado">Compensado em {{item.data_compensado}}</v-chip>
-                  <v-chip small color="warning" else>Aguardando compensação</v-chip>
+                  <v-chip color="success" v-if="item.data_compensado">Compensado em {{item.data_compensado}}</v-chip>
+                  <v-chip color="warning" else>Aguardando compensação</v-chip>
                 </span>
               </template>
               <template v-slot:item.acoes="{item}">
