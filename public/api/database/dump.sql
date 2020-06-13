@@ -64,7 +64,9 @@ create table pagamentos
 2=Crédito;
 3=Crédito-parcelado;
 4=Cheque;
-5=Outro;',
+5=Transferencia-bancaria;
+6=Deposito-bancario;
+7=Outro;',
     valor          decimal(13, 2) default 0.00 null comment 'Para cheques o valor deve ser buscado na tabela "cheques"',
     parcelas       int                         null,
     servico        int                         null,

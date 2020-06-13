@@ -106,7 +106,7 @@ foreach ($servicos as $servico) {
   $statement->bindValue(':cliente_nome', StringHelper::toUpperCase($servico['Cliente']));
   $statement->bindValue(':cliente_cpfcnpj', $servico['CpfCnpj'] ? StringHelper::extractNumbers($servico['CpfCnpj']) : null);
   $statement->bindValue(':endereco_numero', $numero ? $numero : null);
-  $statement->bindValue(':endereco_logradouro', $logradouro ? $logradouro : null);
+  $statement->bindValue(':endereco_logradouro', $logradouro ? StringHelper::toUpperCase($logradouro) : null);
   $statement->bindValue(':endereco_bairro', trim($servico['Bairro']) ? StringHelper::toUpperCase($servico['Bairro']) : null);
   $statement->bindValue(':endereco_cidade', trim($servico['Cidade']) ? StringHelper::toUpperCase($servico['Cidade']) : null);
   $statement->bindValue(':endereco_uf', $servico['EstadoUF'] ? substr($servico['EstadoUF'], 0 , 2) : null);
@@ -267,7 +267,7 @@ foreach ($servicos as $servico) {
   }
   //Se for outros
   elseif ($formaPagamento === 7) {
-    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (5, :valor, :servico, :data_pagamento)");
+    $statement = $db->prepare("INSERT INTO pagamentos (tipo, valor, servico, data_pagamento) VALUES (7, :valor, :servico, :data_pagamento)");
     $statement->bindValue(':valor', $servico['valor']);
     $statement->bindValue(':servico', $servico['ServicoId']);
     $statement->bindValue(':data_pagamento', $dataPagamento);

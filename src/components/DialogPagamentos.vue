@@ -114,7 +114,7 @@
                   ></money>
                 </v-input>
               </div>
-              <div class="font-weight-bold">
+              <div class="font-weight-bold text-sm-left text-right">
                 <p class="mb-0">Valor pago até o momento:</p>
                 <p class="mb-0">R$ {{service.pagamentos ? service.pagamentos.reduce((accumulator, currentValue) => accumulator + currentValue.valor, 0).toFixed(2).replace('.', ',') : '0,00'}}</p>
               </div>
@@ -141,7 +141,11 @@
                 {{ajustaData(item.data_pagamento)}}
               </template>
               <template v-slot:item.obs="{item}">
-                <span v-if="item.tipo === 3">Parcelado em {{item.parcelas}}x</span>
+                <v-chip v-if="item.tipo === 3" small color="primary">{{item.parcelas}}x</v-chip>
+                <span v-else-if="item.tipo === 4">
+                  <v-chip small color="success" v-if="item.data_compensado">Compensado em {{item.data_compensado}}</v-chip>
+                  <v-chip small color="warning" else>Aguardando compensação</v-chip>
+                </span>
               </template>
               <template v-slot:item.acoes="{item}">
                 <v-tooltip top>
@@ -188,7 +192,9 @@
         {value: 2, text: 'Crédito à vista'},
         {value: 3, text: 'Crédito parcelado'},
         {value: 4, text: 'Cheque'},
-        {value: 5, text: 'Outro'}
+        {value: 5, text: 'Transferência bancária'},
+        {value: 6, text: 'Depósito bancário'},
+        {value: 7, text: 'Outro'}
       ],
       inputFormaPagamento: null,
       inputValor: 0,
