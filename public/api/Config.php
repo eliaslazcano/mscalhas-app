@@ -5,7 +5,7 @@ class Config
 {
   const APP_NOME = "MS Calhas";
   const EMPRESA_NOME = "MS Calhas";
-  const HOSPEDAGEM_URL = "http://mscalhas.com.br";
+  const HOSPEDAGEM_URL = "https://mscalhas.com.br";
 
   //Banco de dados
   const DATABASE_HOST     = "186.219.220.111";
