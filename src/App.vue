@@ -85,11 +85,11 @@
       <v-btn light @click="() => {$store.commit('signout'); $router.push('/login')}">Sair</v-btn>
     </v-app-bar>
     <!-- Conteúdo -->
-    <v-content>
+    <v-main>
       <transition name="fade" mode="out-in" @after-leave="scrollTop">
         <router-view/>
       </transition>
-    </v-content>
+    </v-main>
     <!-- Snackbar Global -->
     <v-snackbar
       :top="$store.state.snackbarOptions.top"

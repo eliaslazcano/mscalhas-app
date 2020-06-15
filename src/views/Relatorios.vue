@@ -16,6 +16,7 @@
         </v-row>
       </v-card-text>
     </v-card>
+    <card-faturamento-anual class="elevation-4 my-4"></card-faturamento-anual>
   </v-container>
 </template>
 
@@ -23,9 +24,10 @@
   import CardTicketMedio from "../components/relatorios/CardTicketMedio";
   import CardFaturamento from "../components/relatorios/CardFaturamento";
   import CardServicos from "../components/relatorios/CardServicos";
+  import CardFaturamentoAnual from "../components/relatorios/CardFaturamentoAnual";
   export default {
     name: "Relatorios",
-    components: {CardServicos, CardFaturamento, CardTicketMedio}
+    components: {CardFaturamentoAnual, CardServicos, CardFaturamento, CardTicketMedio}
   }
 </script>
 

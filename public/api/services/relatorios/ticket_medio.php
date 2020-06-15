@@ -8,7 +8,7 @@ require_once __DIR__.'/../../helper/HttpHelper.php';
 require_once __DIR__.'/../../helper/AuthHelper.php';
 require_once __DIR__.'/../../helper/StringHelper.php';
 require_once __DIR__.'/../../database/DbMscalhas.php';
-
+//TODO => Cheques são pagamentos do tipo 4, e o valor não é armazenado na tabela "pagamentos". Favor buscar na tabela "cheques".
 HttpHelper::validarMetodos(array('GET'));
 AuthHelper::sessionValidate();
 

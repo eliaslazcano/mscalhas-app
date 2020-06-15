@@ -14,25 +14,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
 
   //Período Diário
   $query = "SELECT count(id) total FROM servicos WHERE data_finalizacao = current_timestamp";
-  $pagamentos = $db->query($query, array('total'), true);
-  $servicosDiario = $pagamentos['total'];
+  $servicos = $db->query($query, array('total'), true);
+  $servicosDiario = $servicos['total'];
 
   //Período Mensal
   $mesAtual = date('Y-m-');
   $query = "SELECT count(id) total FROM servicos WHERE data_finalizacao LIKE '$mesAtual%'";
-  $pagamentos = $db->query($query, array('total'), true);
-  $servicosMensal = $pagamentos['total'];
+  $servicos = $db->query($query, array('total'), true);
+  $servicosMensal = $servicos['total'];
 
   //Periodo Anual
   $anoAtual = date('Y-');
   $query = "SELECT count(id) total FROM servicos WHERE data_finalizacao LIKE '$anoAtual%'";
-  $pagamentos = $db->query($query, array('total'), true);
-  $servicosAnual = $pagamentos['total'];
+  $servicos = $db->query($query, array('total'), true);
+  $servicosAnual = $servicos['total'];
 
   //Periodo Total
   $query = "SELECT count(id) total FROM servicos WHERE data_finalizacao IS NOT NULL";
-  $pagamentos = $db->query($query, array('total'), true);
-  $servicosTotal = $pagamentos['total'];
+  $servicos = $db->query($query, array('total'), true);
+  $servicosTotal = $servicos['total'];
 
   $dados = array(
     "d"  => round($servicosDiario, 2),
