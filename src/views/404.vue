@@ -1,5 +1,5 @@
 <template>
-  <h1 class="text-center title">Página não encontrada</h1>
+  <h1 class="text-center text-h6">Página não encontrada</h1>
 </template>
 
 <script>

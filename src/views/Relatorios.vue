@@ -2,7 +2,7 @@
   <v-container>
     <ticket-medio></ticket-medio>
     <div>
-      <h1 class="text-center title">Em desenvolvimento...</h1>
+      <h1 class="text-center text-h6">Em desenvolvimento...</h1>
       <ul>
         <li>Ticket médio (faturamento dividido pelo número de serviços, dia/mes/semana/ano ou então os últimos 100 serviços)</li>
         <li>Faturamento total (de todos os sócios dia/mes/ano) com indicadores do dia/mes/ano passados</li>

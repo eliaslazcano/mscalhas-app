@@ -175,7 +175,7 @@
     >
       <v-date-picker v-model="iptData" scrollable :min="dialogCompensarCheque ? dialogCompensarCheque.data_cheque : undefined" :max="hoje">
         <div class="d-flex flex-column" style="width: 100%">
-          <p class="text-center body-1 green--text">Data que resgatou o dinheiro</p>
+          <p class="text-center text-body-1 green--text">Data que resgatou o dinheiro</p>
           <div class="d-flex justify-space-around">
             <v-btn outlined color="primary" @click="dialogCompensarShow = false" :disabled="loading">CANCELAR</v-btn>
             <v-btn color="primary" @click="updateCheque({...dialogCompensarCheque, data_compensado: iptData})" :loading="loading" :disabled="loading">CONFIRMAR</v-btn>

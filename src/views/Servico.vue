@@ -21,7 +21,7 @@
               <v-card-subtitle class="pb-0 text-center"><v-icon class="mr-2">mdi-progress-wrench</v-icon>STATUS DO SERVIÇO</v-card-subtitle>
               <div class="flex-grow-1 d-flex align-center justify-center flex-column">
                 <v-card-title class="py-0 justify-center">{{finalizado ? 'FINALIZADO' : 'EM ANDAMENTO'}}</v-card-title>
-                <p v-if="finalizado" class="caption mb-0">EM {{corrigeDateTime(servico.data_finalizacao)}}</p>
+                <p v-if="finalizado" class="text-caption mb-0">EM {{corrigeDateTime(servico.data_finalizacao)}}</p>
               </div>
               <div class="d-flex justify-center">
                 <v-btn
@@ -51,8 +51,8 @@
               <div class="flex-grow-1 d-flex align-center justify-center flex-column">
                 <v-card-title class="py-0 justify-center">{{valorPago > 0 ? 'R$ ' + valorPago.toFixed(2).replace('.', ',') : 'NÃO FOI PAGO'}}</v-card-title>
                 <template v-if="valorPago !== 0 && servico.valor !== 0">
-                  <p v-if="valorPago < servico.valor" class="caption mb-0">PAGO PARCIALMENTE (FALTA R$ {{(servico.valor - valorPago).toFixed(2).replace('.', ',')}})</p>
-                  <p v-else-if="valorPago >= servico.valor" class="caption mb-0">QUITADO</p>
+                  <p v-if="valorPago < servico.valor" class="text-caption mb-0">PAGO PARCIALMENTE (FALTA R$ {{(servico.valor - valorPago).toFixed(2).replace('.', ',')}})</p>
+                  <p v-else-if="valorPago >= servico.valor" class="text-caption mb-0">QUITADO</p>
                 </template>
               </div>
               <div class="d-flex justify-center">
@@ -259,7 +259,7 @@
 <!--    <div class="pa-1 mb-1 ml-1" style="border: 1px solid black; position: fixed; left: 0; bottom: 0; background-color: rgba(255,255,255,.2); font-size: .6rem; z-index: 999">-->
 <!--      <pre>ID: {{id === null ? 'null' : id}}</pre>-->
 <!--      <hr>-->
-<!--      <p class="caption mb-1">servico</p>-->
+<!--      <p class="text-caption mb-1">servico</p>-->
 <!--      <pre>{{servico}}</pre>-->
 <!--    </div>-->
   </v-container>
