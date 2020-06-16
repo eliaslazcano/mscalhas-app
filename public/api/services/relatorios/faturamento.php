@@ -54,9 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
   $faturamento = array();
   for ($i = 1; $i <= 12; $i++) {
     $mes = $i < 10 ? '0'.strval($i) : strval($i);
-    $query = "SELECT SUM(valor) total FROM pagamentos WHERE data_pagamento LIKE '$ano-$mes-__'";
+    $query = "SELECT COALESCE(SUM(valor), 0) total FROM pagamentos WHERE data_pagamento LIKE '$ano-$mes-__'";
     $dados = $db->query($query, array('total'), true);
-    $faturamento[$i] = $dados['total'];
+    $faturamento[$i-1] = $dados['total'];
   }
 
   HttpHelper::emitirJson($faturamento);
