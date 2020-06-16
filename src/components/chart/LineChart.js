@@ -19,6 +19,15 @@ export default {
               beginAtZero: true
             }
           }]
+        },
+        tooltips: {
+          enabled: true,
+          mode: 'single',
+          callbacks: {
+            label: function(tooltipItems) {
+              return 'R$ ' + tooltipItems.yLabel.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
+          }
         }
       })
     }

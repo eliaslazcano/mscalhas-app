@@ -128,7 +128,7 @@
           <span v-else-if="item.tipo === 1" class="blue--text">Deposito</span> <!-- em conta -->
         </template>
         <template v-slot:item.valor="{item}">
-          <span class="text-no-wrap">R$ {{item.valor.toFixed(2).replace('.', ',')}}</span>
+          <span class="text-no-wrap">R$ {{item.valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".")}}</span>
         </template>
         <template v-slot:item.data_cheque="{item}">{{corrigeData(item.data_cheque)}}</template>
         <template v-slot:item.dias_restantes="{item}">
