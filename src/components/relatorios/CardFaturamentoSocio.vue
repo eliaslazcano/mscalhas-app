@@ -1,16 +1,16 @@
 <template>
   <v-card>
     <v-card-title class="grey lighten-3">
-      Faturamento Anual
-      <p class="ma-0 text-caption w-100">Veja se a empresa está evoluindo</p>
+      Faturamento por sócio
+      <p class="ma-0 text-caption w-100">Veja a produtividade dos sócios</p>
     </v-card-title>
     <v-card-text>
-      <line-chart
+      <bar-chart
         v-if="chartData"
         :chart-data="chartData"
         :options="chartOptions"
         style="height: 22rem"
-      ></line-chart>
+      ></bar-chart>
       <div v-else class="d-flex justify-center align-center flex-column" style="height: 22rem">
         <v-progress-circular indeterminate color="primary" size="48"></v-progress-circular>
         <p class="caption mb-0 mt-2">CALCULANDO</p>
@@ -20,10 +20,10 @@
 </template>
 
 <script>
-  import LineChart from "../chart/LineChart";
+  import BarChart from "../chart/BarChart";
   export default {
-    name: "CardFaturamentoAnual",
-    components: {LineChart},
+    name: "CardFaturamentoSocio",
+    components: {BarChart},
     data: () => ({
       loading: true,
       chartData: null,
@@ -51,51 +51,44 @@
         },
         title: {
           display: true,
-          text: 'Clique no ano para remove-lo ou exibi-lo'
+          text: 'Clique no sócio para remove-lo ou exibi-lo'
         }
-      }
+      },
+      colors: [
+        'rgb(54, 162, 235)',
+        'rgb(255, 159, 64)',
+        'rgb(255, 205, 86)',
+        'rgb(255, 99, 132)',
+        'rgb(75, 192, 192)',
+        'rgb(153, 102, 255)',
+        'rgb(201, 203, 207)'
+      ]
     }),
     methods: {
       async loadData() {
-        const date = new Date();
-        const anoAtual = date.getFullYear();
         this.loading = true;
         try {
-          const requests = await Promise.all([
-            this.$http.post('/relatorios/faturamento', {ano: anoAtual}),
-            this.$http.post('/relatorios/faturamento', {ano: anoAtual -1}),
-            this.$http.post('/relatorios/faturamento', {ano: anoAtual -2})
-          ])
+          const {data} = await this.$http.post('/relatorios/rentabilidade_socio', {ano: 2020});
+          let dataset = data.map((item, index) => ({
+            label: item.nome,
+            data: item.faturamento,
+            backgroundColor: this.getColor(index),
+            borderColor: this.getColor(index)
+          }));
           this.chartData = {
             labels: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-            datasets: [
-              {
-                label: anoAtual -2,
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: requests[2].data,
-                fill: false,
-                hidden: true
-              },
-              {
-                label: anoAtual -1,
-                backgroundColor: 'rgb(255, 159, 64)',
-                borderColor: 'rgb(255, 159, 64)',
-                data: requests[1].data,
-                fill: false
-              },
-              {
-                label: anoAtual,
-                backgroundColor: 'rgb(54, 162, 235)',
-                borderColor: 'rgb(54, 162, 235)',
-                data: requests[0].data.filter((x, i) => i <= date.getMonth()),
-                fill: false
-              }
-            ]
-          }
+            datasets: dataset
+          };
+
         } finally {
           this.loading = false;
         }
+      },
+      getColor(i = 0) {
+        //7 cores, de 0 a 6.
+        if (i < this.colors.length) return this.colors[i];
+        let x = Math.trunc(i / this.colors.length);
+        return this.colors[i - (this.colors.length * x)];
       }
     },
     mounted() {

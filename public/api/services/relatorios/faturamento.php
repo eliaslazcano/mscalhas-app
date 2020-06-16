@@ -48,16 +48,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
   $ano = HttpHelper::validarParametro('ano');
-
   $db = new DbMscalhas();
-
   $faturamento = array();
+
+  //Metodo 1 - Desempenho depende do PHP:
+  $query = "SELECT valor, data_pagamento FROM pagamentos WHERE data_pagamento LIKE '$ano-__-__'";
+  $dados = $db->query($query, array('valor'));
   for ($i = 1; $i <= 12; $i++) {
     $mes = $i < 10 ? '0'.strval($i) : strval($i);
-    $query = "SELECT COALESCE(SUM(valor), 0) total FROM pagamentos WHERE data_pagamento LIKE '$ano-$mes-__'";
-    $dados = $db->query($query, array('total'), true);
-    $faturamento[$i-1] = $dados['total'];
+    $dadosMes = array_filter($dados, function ($item) use ($ano, $mes) { return StringHelper::startsWith($item['data_pagamento'], $ano.'-'.$mes); });
+    $total = array_reduce($dadosMes, function ($carry, $item) { return $carry + $item['valor']; }, 0);
+    $faturamento[$i-1] = $total;
   }
+
+  //Metodo 2 - Desempenho depende do banco:
+//  for ($i = 1; $i <= 12; $i++) {
+//    $mes = $i < 10 ? '0'.strval($i) : strval($i);
+//    $query = "SELECT COALESCE(SUM(valor), 0) total FROM pagamentos WHERE data_pagamento LIKE '$ano-$mes-__'";
+//    $dados = $db->query($query, array('total'), true);
+//    $faturamento[$i-1] = $dados['total'];
+//  }
 
   HttpHelper::emitirJson($faturamento);
 }
