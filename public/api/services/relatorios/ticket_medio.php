@@ -8,7 +8,7 @@ require_once __DIR__.'/../../helper/HttpHelper.php';
 require_once __DIR__.'/../../helper/AuthHelper.php';
 require_once __DIR__.'/../../helper/StringHelper.php';
 require_once __DIR__.'/../../database/DbMscalhas.php';
-//TODO => Cheques são pagamentos do tipo 4, e o valor não é armazenado na tabela "pagamentos". Favor buscar na tabela "cheques".
+
 HttpHelper::validarMetodos(array('GET'));
 AuthHelper::sessionValidate();
 
@@ -17,27 +17,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   $db = new DbMscalhas();
 
   //Período Diário
-  $query = "SELECT s.id, SUM(p.valor) pago FROM servicos s LEFT JOIN pagamentos p ON s.id = p.servico WHERE p.data_pagamento = current_date GROUP BY s.id";
+  $query = "SELECT s.id, SUM(IF(p.cheque IS NULL, p.valor, c.valor)) pago FROM servicos s LEFT JOIN pagamentos p ON s.id = p.servico LEFT JOIN cheques c ON p.cheque = c.id WHERE IF(p.cheque IS NULL, p.data_pagamento, c.data_cheque) = current_date GROUP BY s.id";
   $servicos = $db->query($query, array('id','pago'));
   $total = array_reduce($servicos, function ($carry, $item) { return $carry + $item['pago']; }, 0);
   $ticketDiario = count($servicos) > 0 ? $total / count($servicos) : 0;
 
   //Período Mensal
   $mesAtual = date('Y-m-');
-  $query = "SELECT s.id, SUM(p.valor) pago FROM servicos s LEFT JOIN pagamentos p ON s.id = p.servico WHERE p.data_pagamento LIKE '$mesAtual%' GROUP BY s.id";
+  $query = "SELECT s.id, SUM(IF(p.cheque IS NULL, p.valor, c.valor)) pago FROM servicos s LEFT JOIN pagamentos p ON s.id = p.servico LEFT JOIN cheques c ON p.cheque = c.id WHERE IF(p.cheque IS NULL, p.data_pagamento, c.data_cheque) LIKE '$mesAtual%' GROUP BY s.id";
   $servicos = $db->query($query, array('id','pago'));
   $total = array_reduce($servicos, function ($carry, $item) { return $carry + $item['pago']; }, 0);
   $ticketMensal = count($servicos) > 0 ? $total / count($servicos) : 0;
 
   //Periodo Anual
   $anoAtual = date('Y-');
-  $query = "SELECT s.id, SUM(p.valor) pago FROM servicos s LEFT JOIN pagamentos p ON s.id = p.servico WHERE p.data_pagamento LIKE '$anoAtual%' GROUP BY s.id";
+  $query = "SELECT s.id, SUM(IF(p.cheque IS NULL, p.valor, c.valor)) pago FROM servicos s LEFT JOIN pagamentos p ON s.id = p.servico LEFT JOIN cheques c ON p.cheque = c.id WHERE IF(p.cheque IS NULL, p.data_pagamento, c.data_cheque) LIKE '$anoAtual%' GROUP BY s.id";
   $servicos = $db->query($query, array('id','pago'));
   $total = array_reduce($servicos, function ($carry, $item) { return $carry + $item['pago']; }, 0);
   $ticketAnual = count($servicos) > 0 ? $total / count($servicos) : 0;
 
   //Periodo Total
-  $query = "SELECT s.id, SUM(p.valor) pago FROM servicos s LEFT JOIN pagamentos p ON s.id = p.servico GROUP BY s.id";
+  $query = "SELECT s.id, SUM(IF(p.cheque IS NULL, p.valor, c.valor)) pago FROM servicos s LEFT JOIN pagamentos p ON s.id = p.servico LEFT JOIN cheques c ON p.cheque = c.id GROUP BY s.id";
   $servicos = $db->query($query, array('id','pago'));
   $total = array_reduce($servicos, function ($carry, $item) { return $carry + $item['pago']; }, 0);
   $ticketTotal = count($servicos) > 0 ? $total / count($servicos) : 0;

@@ -7,7 +7,6 @@ require_once __DIR__.'/../../helper/HttpHelper.php';
 require_once __DIR__.'/../../helper/AuthHelper.php';
 require_once __DIR__.'/../../helper/StringHelper.php';
 require_once __DIR__.'/../../database/DbMscalhas.php';
-//TODO => Cheques são pagamentos do tipo 4, e o valor não é armazenado na tabela "pagamentos". Favor buscar na tabela "cheques".
 HttpHelper::validarMetodos(array('GET', 'POST'));
 AuthHelper::sessionValidate();
 
@@ -16,24 +15,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
   $db = new DbMscalhas();
 
   //Período Diário
-  $query = "SELECT SUM(valor) total FROM pagamentos WHERE data_pagamento = current_date";
+  $query = "SELECT SUM(IF(p.cheque IS NULL, p.valor, c.valor)) total FROM pagamentos p LEFT JOIN cheques c ON p.cheque = c.id WHERE IF(p.cheque IS NULL, p.data_pagamento, c.data_cheque) = current_date";
   $pagamentos = $db->query($query, array('total'), true);
   $faturamentoDiario = $pagamentos['total'];
 
   //Período Mensal
   $mesAtual = date('Y-m-');
-  $query = "SELECT SUM(valor) total FROM pagamentos WHERE data_pagamento LIKE '$mesAtual%'";
+  $query = "SELECT SUM(IF(p.cheque IS NULL, p.valor, c.valor)) total FROM pagamentos p LEFT JOIN cheques c ON p.cheque = c.id WHERE IF(p.cheque IS NULL, p.data_pagamento, c.data_cheque) LIKE '$mesAtual%'";
   $pagamentos = $db->query($query, array('total'), true);
   $faturamentoMensal = $pagamentos['total'];
 
   //Periodo Anual
   $anoAtual = date('Y-');
-  $query = "SELECT SUM(valor) total FROM pagamentos WHERE data_pagamento LIKE '$anoAtual%'";
+  $query = "SELECT SUM(IF(p.cheque IS NULL, p.valor, c.valor)) total FROM pagamentos p LEFT JOIN cheques c ON p.cheque = c.id WHERE IF(p.cheque IS NULL, p.data_pagamento, c.data_cheque) LIKE '$anoAtual%'";
   $pagamentos = $db->query($query, array('total'), true);
   $faturamentoAnual = $pagamentos['total'];
 
   //Periodo Total
-  $query = "SELECT SUM(valor) total FROM pagamentos";
+  $query = "SELECT SUM(IF(p.cheque IS NULL, p.valor, c.valor)) total FROM pagamentos p LEFT JOIN cheques c ON p.cheque = c.id";
   $pagamentos = $db->query($query, array('total'), true);
   $faturamentoTotal = $pagamentos['total'];
 
@@ -52,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
   $faturamento = array();
 
   //Metodo 1 - Desempenho depende do PHP:
-  $query = "SELECT valor, data_pagamento FROM pagamentos WHERE data_pagamento LIKE '$ano-__-__'";
+  $query = "SELECT COALESCE(IF(p.cheque IS NULL, p.valor, c.valor), 0) valor, IF(p.cheque IS NULL, p.data_pagamento, c.data_cheque) data_pagamento FROM pagamentos p LEFT JOIN cheques c ON p.cheque = c.id WHERE IF(p.cheque IS NULL, p.data_pagamento, c.data_cheque) LIKE '$ano-__-__'";
   $dados = $db->query($query, array('valor'));
   for ($i = 1; $i <= 12; $i++) {
     $mes = $i < 10 ? '0'.strval($i) : strval($i);

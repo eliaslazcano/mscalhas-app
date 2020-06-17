@@ -21,6 +21,12 @@
     </v-card>
     <card-faturamento-anual class="elevation-3 my-4"></card-faturamento-anual>
     <card-faturamento-socio class="elevation-3 my-4"></card-faturamento-socio>
+    <v-card>
+      <v-card-title>Aviso</v-card-title>
+      <v-card-text>
+        <p class="text-caption">Os calculos de faturamento não levam em consideração os "cheques" que foram adicionados de forma avulsa no sistema. Somente os cheques que foram registrados como pagamento de serviço entram no calculo.</p>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
