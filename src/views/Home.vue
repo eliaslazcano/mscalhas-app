@@ -5,7 +5,7 @@
         <v-img src="@/assets/logo-color.svg" height="10rem" contain></v-img>
       </v-card-title>
       <v-card-text>
-        <p class="text-center">Bem vindo ao protótipo do novo sistema de gestão da MS Calhas Corporation.</p>
+        <p class="text-center">Bem vindo ao protótipo do novo sistema de gestão da MS Calhas</p>
       </v-card-text>
     </v-card>
   </v-container>

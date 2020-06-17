@@ -107,6 +107,7 @@
         no-data-text="Nenhum cheque encontrado"
         :custom-sort="customSort"
         :search="search"
+        dense
       >
         <template v-slot:top>
           <v-text-field
@@ -118,10 +119,7 @@
           ></v-text-field>
         </template>
         <template v-slot:loading>
-          <v-skeleton-loader
-            class="mt-1"
-            type="table-tbody"
-          ></v-skeleton-loader>
+          <p class="my-5">Carregando cheques...</p>
         </template>
         <template v-slot:item.tipo="{item}">
           <span v-if="item.tipo === 0" class="green--text">Saque</span> <!-- em dinheiro -->
@@ -140,7 +138,14 @@
           <div class="d-flex flex-nowrap">
             <v-tooltip top>
               <template v-slot:activator="{ on }">
-                <v-btn icon color="error" @click="deleteCheque(item)" :disabled="loading" v-on="on">
+                <v-btn
+                  icon
+                  color="error"
+                  @click="deleteCheque(item)"
+                  :disabled="loading"
+                  v-on="on"
+                  small
+                >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
@@ -148,7 +153,14 @@
             </v-tooltip>
             <v-tooltip top v-if="!item.data_compensado">
               <template v-slot:activator="{on}">
-                <v-btn icon color="success" :disabled="loading || (hoje < item.data_cheque)" v-on="on" @click="() => {dialogCompensarCheque = item; dialogCompensarShow = true}">
+                <v-btn
+                  icon
+                  color="success"
+                  :disabled="loading || (hoje < item.data_cheque)"
+                  v-on="on"
+                  @click="() => {dialogCompensarCheque = item; dialogCompensarShow = true}"
+                  small
+                >
                   <v-icon>mdi-checkbox-marked-circle-outline</v-icon>
                 </v-btn>
               </template>
@@ -156,7 +168,14 @@
             </v-tooltip>
             <v-tooltip top v-if="item.servico">
               <template v-slot:activator="{ on }">
-                <v-btn icon color="primary" :disabled="loading" :to="'/servico/' + item.servico" v-on="on">
+                <v-btn
+                  icon
+                  color="primary"
+                  :disabled="loading"
+                  :to="'/servico/' + item.servico"
+                  v-on="on"
+                  small
+                >
                   <v-icon>mdi-tools</v-icon>
                 </v-btn>
               </template>
@@ -200,9 +219,9 @@
         {text: 'Cliente', value: 'cliente', sortable: false},
         {text: 'Tipo de resgate', value: 'tipo', sortable: false},
         {text: 'Banco', value: 'banco', sortable: false},
-        {text: 'Agencia', value: 'agencia', sortable: false},
-        {text: 'Conta', value: 'conta', sortable: false},
-        {text: 'NºCheque', value: 'numcheque', sortable: false},
+        // {text: 'Agencia', value: 'agencia', sortable: false},
+        // {text: 'Conta', value: 'conta', sortable: false},
+        // {text: 'NºCheque', value: 'numcheque', sortable: false},
         {text: 'Valor', value: 'valor', sortable: false},
         {text: 'Data', value: 'data_cheque', sortable: false},
         {text: 'Status', value: 'dias_restantes', align: 'center', sortable: false},

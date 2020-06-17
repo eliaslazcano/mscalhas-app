@@ -14,6 +14,7 @@
         no-data-text="Nenhum serviço encontrado"
         @click:row="abrirServico"
         :search="search"
+        dense
       >
         <template v-slot:top>
           <v-text-field
@@ -25,15 +26,12 @@
           ></v-text-field>
         </template>
         <template v-slot:loading>
-          <v-skeleton-loader
-            class="mt-1"
-            type="table-row-divider@10"
-          ></v-skeleton-loader>
+          <p class="my-5">Carregando serviços...</p>
         </template>
         <template v-slot:item.data_criacao="{item}">{{ajustaData(item.data_criacao)}}</template>
         <template v-slot:item.status="{item}">
-          <v-chip color="success" v-if="item.data_finalizacao">FINALIZADO</v-chip>
-          <v-chip color="warning" v-else>EM ANDAMENTO</v-chip>
+          <v-chip color="success" v-if="item.data_finalizacao" small>FINALIZADO</v-chip>
+          <v-chip color="warning" v-else small>EM ANDAMENTO</v-chip>
         </template>
         <template v-slot:item.valor="{item}">R$ {{item.valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".")}}</template>
       </v-data-table>
