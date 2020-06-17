@@ -33,7 +33,9 @@
           <v-chip color="success" v-if="item.data_finalizacao" small>FINALIZADO</v-chip>
           <v-chip color="warning" v-else small>EM ANDAMENTO</v-chip>
         </template>
-        <template v-slot:item.valor="{item}">R$ {{item.valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".")}}</template>
+        <template v-slot:item.valor="{item}">
+          <span :class="{'green--text': (item.pago >= item.valor), 'red--text': item.pago === 0}">R$ {{item.pago >= item.valor ? formataValor(item.pago) : formataValor(item.valor)}}</span>
+        </template>
       </v-data-table>
     </v-card-text>
   </v-card>
@@ -67,7 +69,10 @@
         }
       },
       abrirServico(a) {this.$router.push('/servico/' + a.id)},
-      ajustaData(datetime) {return DateHelper.date_SQLparaBR(datetime)}
+      ajustaData(datetime) {return DateHelper.date_SQLparaBR(datetime)},
+      formataValor(valor = 0) {
+        return valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+      }
     },
     created() {
       this.loadData();

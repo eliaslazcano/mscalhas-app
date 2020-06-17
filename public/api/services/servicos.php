@@ -11,7 +11,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
   $id = HttpHelper::obterParametro('id');
   if (!$id) {
-    $servicos = DbMscalhas::fastQuery("SELECT s.id, s.socio_responsavel, so.nome socio_responsavel_nome, s.valor, s.cliente_nome, s.data_criacao, s.data_finalizacao FROM servicos s LEFT JOIN socios so ON s.socio_responsavel = so.id ORDER BY s.id DESC", array('id', 'socio_responsavel', 'valor'));
+    $query = <<<EOT
+SELECT s.id, s.socio_responsavel, so.nome socio_responsavel_nome, s.valor, s.cliente_nome, s.data_criacao, s.data_finalizacao, COALESCE(SUM(IF(p.cheque IS NULL, p.valor, c.valor)), 0) pago
+FROM servicos s
+LEFT JOIN socios so ON s.socio_responsavel = so.id
+LEFT JOIN pagamentos p ON s.id = p.servico
+LEFT JOIN cheques c ON p.cheque = c.id
+GROUP BY s.id
+ORDER BY s.id DESC
+EOT;
+
+    $servicos = DbMscalhas::fastQuery($query, array('id', 'socio_responsavel', 'valor', 'pago'));
     HttpHelper::emitirJson($servicos);
   } else {
     $query = "SELECT s.*, x.nome socio_responsavel_nome FROM servicos s LEFT JOIN socios x ON s.socio_responsavel = x.id WHERE s.id = :id";
