@@ -85,7 +85,7 @@
           </v-col>
           <v-col cols="12" sm="6">
             <div>
-              <p class="mb-1">Valor <span v-if="valorPago === 0">estimado</span> do serviço</p>
+              <p class="mb-1">Valor estimado do serviço</p>
               <v-input hide-details>
                 <money
                   class="form-control font-weight-bold w-100"

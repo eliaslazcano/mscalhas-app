@@ -67,7 +67,13 @@
       <!-- Rodapé do menu -->
       <template v-slot:append>
         <div class="px-2 pb-3">
-          <v-btn color="primary" class="white--text" large block @click="() => {showMenu = false; $store.dispatch('signout')}">SAIR</v-btn>
+          <v-btn
+            color="primary"
+            class="white--text"
+            large
+            block
+            @click="() => {showMenu = false; $store.commit('signout'); $router.push('/login')}"
+          >SAIR</v-btn>
         </div>
       </template>
     </v-navigation-drawer>

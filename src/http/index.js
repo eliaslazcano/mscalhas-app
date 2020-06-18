@@ -3,7 +3,7 @@ import axios from 'axios'
 import store from '../store'
 
 const http = axios.create({
-  baseURL: 'https://mscalhas.com.br/app/api/',
+  baseURL: 'https://mscalhas.com.br/api/',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
